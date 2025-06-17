@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Scaling (Single Cluster) | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 40vh; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- Navigation will be updated in the final index.html to link here -->
+             <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Scaling & Availability</h3>
+                <a href="horizontal-scaling-single.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Single Cluster Scaling</a>
+                <a href="conservative-maintenance.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Conservative Maintenance</a>
+                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Best Practices & Pitfalls</a>
+                <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Cross-Cluster Scaling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Horizontal Scaling (Single Cluster)</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">The Horizontal Pod Autoscaler (HPA) is a core Kubernetes component that embodies cloud-native elasticity. It automatically adjusts the number of pod replicas based on observed metrics, ensuring performance under load while controlling costs.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="hpa">
+                    <h2 class="text-3xl font-bold mb-2">The HPA Control Loop</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">The HPA continuously compares observed metrics (like CPU utilization) against a target you define. Use the slider below to see how a change in the current metric affects the calculated number of desired replicas, based on the core HPA formula.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <div class="mb-4">
+                                    <label for="hpa-slider" class="block text-sm font-medium text-stone-700">Current Average CPU Utilization (%)</label>
+                                    <input id="hpa-slider" type="range" min="10" max="150" value="50" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div class="flex justify-between text-sm font-mono p-3 bg-stone-100 rounded-md">
+                                    <span>Current Replicas: <span id="hpa-current-replicas">3</span></span>
+                                    <span>Desired Replicas: <span id="hpa-desired-replicas" class="font-bold text-indigo-600">3</span></span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">Formula: `desired = ceil(current * (currentMetric / desiredMetric))`</p>
+                            </div>
+                            <div class="chart-container h-64 md:h-80">
+                                <canvas id="hpaChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section id="hpa-metrics">
+                     <h2 class="text-3xl font-bold mb-2">Scaling Metrics</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">While CPU and memory are common, HPA can scale on more advanced metrics for greater accuracy. This requires a metrics adapter like the Prometheus adapter.</p>
+                     <div class="grid md:grid-cols-2 gap-6">
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">Custom Metrics</h3>
+                             <p class="text-sm text-stone-600">Metrics associated directly with pods, like `http_requests_per_second`. Ideal for I/O-bound workloads.</p>
+                         </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">External Metrics</h3>
+                             <p class="text-sm text-stone-600">Metrics from outside the cluster, like the depth of an AWS SQS queue. Perfect for scaling consumer workloads.</p>
+                         </div>
+                     </div>
+                </section>
+            </div>
+        </main>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('hpaChart')) {
+        let hpaChart;
+        const hpaSlider = document.getElementById('hpa-slider');
+        const hpaCurrentReplicasEl = document.getElementById('hpa-current-replicas');
+        const hpaDesiredReplicasEl = document.getElementById('hpa-desired-replicas');
+        const desiredMetric = 50;
+
+        function createHpaChart() {
+            const ctx = document.getElementById('hpaChart').getContext('2d');
+            hpaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['CPU Utilization'],
+                    datasets: [
+                        { label: 'Current Avg', data: [50], backgroundColor: 'rgba(59, 130, 246, 0.5)', borderColor: 'rgb(59, 130, 246)', borderWidth: 1 },
+                        { label: 'Desired Target', data: [desiredMetric], backgroundColor: 'rgba(236, 72, 153, 0.5)', borderColor: 'rgb(236, 72, 153)', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false, indexAxis: 'y',
+                    scales: { x: { beginAtZero: true, max: 160, title: { display: true, text: 'Utilization (%)' } } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'HPA Metrics' } }
+                }
+            });
+        }
+        function updateHpa() {
+            const currentMetric = parseInt(hpaSlider.value);
+            const currentReplicas = parseInt(hpaCurrentReplicasEl.textContent);
+            const desiredReplicas = Math.ceil(currentReplicas * (currentMetric / desiredMetric));
+            hpaDesiredReplicasEl.textContent = desiredReplicas;
+            hpaChart.data.datasets[0].data[0] = currentMetric;
+            hpaChart.update();
+        }
+        hpaSlider.addEventListener('input', updateHpa);
+        createHpaChart();
+        updateHpa();
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Cluster Scaling | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- Navigation will be updated in the final index.html to link here -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Scaling & Availability</h3>
+                <a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Single Cluster Scaling</a>
+                <a href="conservative-maintenance.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Conservative Maintenance</a>
+                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Best Practices & Pitfalls</a>
+                <a href="horizontal-scaling-cross-cluster.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Cross-Cluster Scaling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Horizontal Scaling (Cross-Cluster)</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">For ultimate high availability, workloads must be distributed across multiple clusters in different failure domains. This introduces challenges in node autoscaling, workload distribution, and global traffic routing.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="node-autoscaling">
+                     <h2 class="text-3xl font-bold mb-2">Node-Level Autoscaling</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">Each cluster must be able to scale its own node capacity. Modern tools like Karpenter offer more speed and efficiency than the traditional Cluster Autoscaler.</p>
+                     <div class="bg-white p-6 rounded-lg shadow-lg">
+                         <h3 class="font-semibold text-lg mb-4">Cluster Autoscaler vs. Karpenter</h3>
+                         <table class="w-full text-sm text-left">
+                             <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                                 <tr><th class="p-2">Feature</th><th class="p-2 font-bold">Cluster Autoscaler (CA)</th><th class="p-2 font-bold">Karpenter</th></tr>
+                             </thead>
+                             <tbody>
+                                 <tr class="border-b"><td class="p-2">Method</td><td class="p-2">Manages pre-defined Node Groups</td><td class="p-2">Provisions nodes just-in-time via cloud APIs</td></tr>
+                                 <tr class="border-b"><td class="p-2">Efficiency</td><td class="p-2">Less efficient; group-based and can lead to waste.</td><td class="p-2">More efficient; provisions perfectly sized nodes.</td></tr>
+                                 <tr><td class="p-2">Speed</td><td class="p-2">Slower; dependent on node group spin-up time.</td><td class="p-2">Faster; direct API interaction.</td></tr>
+                             </tbody>
+                         </table>
+                     </div>
+                </section>
+                <section id="workload-distribution">
+                     <h2 class="text-3xl font-bold mb-2">Workload Distribution & Traffic Routing</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">Once clusters are in place, workloads must be deployed and traffic must be intelligently routed across them.</p>
+                      <div class="grid md:grid-cols-2 gap-6">
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">Workload Distribution</h3>
+                             <p class="text-sm text-stone-600"><span class="font-bold text-indigo-600">GitOps</span> (using tools like ArgoCD or Flux) has become the de-facto standard for providing a declarative, auditable, and consistent way to manage applications across a fleet of clusters.</p>
+                         </div>
+                          <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">Cross-Cluster Traffic</h3>
+                             <p class="text-sm text-stone-600">A multi-cluster <span class="font-bold">Service Mesh</span> provides seamless service discovery and mTLS, while a <span class="font-bold">Global Server Load Balancer (GSLB)</span> provides DNS-based failover between clusters.</p>
+                         </div>
+                     </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

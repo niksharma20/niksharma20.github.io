@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conservative Maintenance | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- Navigation will be updated in the final index.html to link here -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Scaling & Availability</h3>
+                <a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Single Cluster Scaling</a>
+                <a href="conservative-maintenance.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Conservative Maintenance</a>
+                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Best Practices & Pitfalls</a>
+                <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Cross-Cluster Scaling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Conservative Maintenance</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">A Pod Disruption Budget (PDB) is a safety contract with Kubernetes. It ensures that voluntary maintenance actions, like node drains, do not take down too many application replicas at once, thus preserving service availability.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="pdb-intro">
+                    <h2 class="text-3xl font-bold mb-2">Voluntary vs. Involuntary Disruptions</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">It's critical to understand that PDBs only protect against <span class="font-semibold">voluntary</span> disruptions (e.g., node upgrades). They cannot prevent <span class="font-semibold">involuntary</span> disruptions caused by unavoidable events like hardware failure.</p>
+                </section>
+                <section id="pdb-config">
+                     <h2 class="text-3xl font-bold mb-2">Configuring a PDB</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">A PDB defines either `minAvailable` or `maxUnavailable` pods for an application. Use the calculator below to see how a PDB configuration affects the number of pods that must remain running during a disruption.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg mb-4">PDB Calculator</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium">Total Replicas</label>
+                                <input type="number" id="pdb-replicas" value="10" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
+                            </div>
+                            <div class="flex items-end space-x-4">
+                                <div>
+                                    <label class="block text-sm font-medium">Max Unavailable</label>
+                                    <input type="text" id="pdb-max-unavailable" value="1" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
+                                    <p class="text-xs text-stone-500">Number or percentage (e.g., 25%)</p>
+                                </div>
+                                <button id="pdb-calc-button" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700">Calculate</button>
+                            </div>
+                        </div>
+                        <div id="pdb-result" class="mt-4 p-4 bg-indigo-50 rounded-md border border-indigo-200 text-indigo-800"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('pdb-calc-button')) {
+        function calculatePdb() {
+            const replicas = parseInt(document.getElementById('pdb-replicas').value);
+            const maxUnavailableInput = document.getElementById('pdb-max-unavailable').value;
+            const resultEl = document.getElementById('pdb-result');
+
+            if (isNaN(replicas) || replicas <= 0) {
+                resultEl.innerHTML = 'Please enter a valid number of replicas.'; return;
+            }
+
+            let maxUnavailable;
+            if (maxUnavailableInput.includes('%')) {
+                const percentage = parseInt(maxUnavailableInput.replace('%', ''));
+                if (isNaN(percentage)) { resultEl.innerHTML = 'Invalid percentage.'; return; }
+                maxUnavailable = Math.floor(replicas * (percentage / 100));
+            } else {
+                maxUnavailable = parseInt(maxUnavailableInput);
+                if (isNaN(maxUnavailable)) { resultEl.innerHTML = 'Invalid number.'; return; }
+            }
+            
+            const minAvailable = replicas - maxUnavailable;
+            resultEl.innerHTML = `With <strong>${replicas}</strong> total replicas and a <strong>maxUnavailable</strong> of <strong>${maxUnavailable}</strong>, you must have at least <strong>${minAvailable}</strong> pods running during a voluntary disruption.`;
+        }
+        document.getElementById('pdb-calc-button').addEventListener('click', calculatePdb);
+        calculatePdb();
+    }
+});
+</script>
+</body>
+</html>
