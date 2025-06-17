@@ -12,22 +12,107 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .nav-category-header { cursor: pointer; }
+        .arrow.rotate-180 { transform: rotate(180deg); }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 40vh; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
     <div class="flex">
         <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
-            <!-- Navigation will be updated in the final index.html to link here -->
-             <nav class="space-y-2">
-                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
-                <!-- Other main links -->
-                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Scaling & Availability</h3>
-                <a href="horizontal-scaling-single.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Single Cluster Scaling</a>
-                <a href="conservative-maintenance.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Conservative Maintenance</a>
-                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Best Practices & Pitfalls</a>
-                <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Cross-Cluster Scaling</a>
+            <!-- Master Navigation Start -->
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
+                <div>
+                    <h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2>
+                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">
+                        LinkedIn Profile
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Hobbies</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Travel Blog</a>
+
+                <div>
+                    <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                        <h3 class="font-semibold text-stone-700">Technical Blogs</h3>
+                        <span class="arrow transform transition-transform duration-200">▼</span>
+                    </div>
+                    <div id="links-tech-blogs" class="mt-1 ml-2 space-y-2 hidden">
+                        <!-- Level 2: Resiliency -->
+                        <div class="nav-subcategory">
+                            <div id="nav-resiliency-main" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                <h4 class="font-semibold text-stone-600 text-sm">Resiliency</h4>
+                                <span class="arrow transform transition-transform duration-200">▼</span>
+                            </div>
+                            <div id="links-resiliency-main" class="mt-1 ml-2 space-y-2 hidden">
+                                <!-- Level 3: Workload Resiliency -->
+                                <div class="nav-subcategory">
+                                    <div id="nav-workload-resiliency" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                        <h5 class="font-semibold text-stone-500 text-sm">Workload Resiliency</h5>
+                                        <span class="arrow transform transition-transform duration-200">▼</span>
+                                    </div>
+                                    <div id="links-workload-resiliency" class="mt-1 ml-2 space-y-1 hidden">
+                                        <!-- Level 4: Categories -->
+                                        <div class="nav-subcategory">
+                                             <div id="nav-core-resilience" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                                <h6 class="font-semibold text-stone-500 text-xs">Core Resilience</h6>
+                                                <span class="arrow transform transition-transform duration-200">▼</span>
+                                            </div>
+                                            <div id="links-core-resilience" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="fault-tolerance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Tolerance</a>
+                                                <a href="fault-isolation.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Isolation</a>
+                                                <a href="app-health.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Application Health</a>
+                                                <a href="auto-recovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Automated Recovery</a>
+                                                <a href="qos.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Quality of Service</a>
+                                                <a href="resource-management.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Management</a>
+                                            </div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-scaling" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                                <h6 class="font-semibold text-stone-500 text-xs">Scaling & Availability</h6>
+                                                <span class="arrow transform transition-transform duration-200">▼</span>
+                                            </div>
+                                            <div id="links-scaling" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="horizontal-scaling-single.html" class="nav-link active-page block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Single Cluster Scaling</a>
+                                                <a href="conservative-maintenance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Conservative Maintenance</a>
+                                                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Best Practices & Pitfalls</a>
+                                                <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Cross-Cluster Scaling</a>
+                                            </div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-traffic" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                                <h6 class="font-semibold text-stone-500 text-xs">Traffic Deployment</h6>
+                                                <span class="arrow transform transition-transform duration-200">▼</span>
+                                            </div>
+                                            <div id="links-traffic" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="service-discovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Service Discovery</a>
+                                                <a href="traffic-flow.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">N-S & E-W Traffic</a>
+                                                <a href="deployment-strategy.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Deployment Strategies</a>
+                                                <a href="rate-limiting.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Rate Limiting</a>
+                                            </div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-validation" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                                                <h6 class="font-semibold text-stone-500 text-xs">Validation & Benchmarking</h6>
+                                                <span class="arrow transform transition-transform duration-200">▼</span>
+                                            </div>
+                                            <div id="links-validation" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="workload-benchmarking.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Workload Benchmarking</a>
+                                                <a href="chaos-engineering.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Chaos Engineering</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </nav>
+            <!-- Master Navigation End -->
         </aside>
         <main class="w-full p-4 md:p-8 lg:p-12">
             <header class="mb-12">
@@ -76,6 +161,46 @@
     </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    function setupCollapsibleNav(headerId, linksId) {
+        const header = document.getElementById(headerId);
+        if (!header) return;
+        const links = document.getElementById(linksId);
+        if (!links) return;
+        const arrow = header.querySelector('.arrow');
+        if (!arrow) return;
+
+        header.addEventListener('click', (e) => {
+            e.stopPropagation();
+            links.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        });
+    }
+
+    // Setup all levels of navigation
+    setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs');
+    setupCollapsibleNav('nav-resiliency-main', 'links-resiliency-main');
+    setupCollapsibleNav('nav-workload-resiliency', 'links-workload-resiliency');
+    setupCollapsibleNav('nav-core-resilience', 'links-core-resilience');
+    setupCollapsibleNav('nav-scaling', 'links-scaling');
+    setupCollapsibleNav('nav-traffic', 'links-traffic');
+    setupCollapsibleNav('nav-validation', 'links-validation');
+
+    // Automatically open the path to the active page
+    const activeLink = document.querySelector('.nav-link.active-page');
+    if (activeLink) {
+        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
+        while (parent) {
+            parent.classList.remove('hidden');
+            const header = parent.previousElementSibling;
+            if (header && header.classList.contains('nav-category-header')) {
+                const arrow = header.querySelector('.arrow');
+                if (arrow) arrow.classList.add('rotate-180');
+            }
+            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
+        }
+    }
+    
+    // Page-specific JS for HPA Chart
     if (document.getElementById('hpaChart')) {
         let hpaChart;
         const hpaSlider = document.getElementById('hpa-slider');
