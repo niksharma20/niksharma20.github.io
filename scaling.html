@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling & Availability | K8s Resiliency Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 40vh; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-64 bg-white shadow-md p-4 hidden lg:block overflow-y-auto">
+            <h2 class="text-xl font-bold text-indigo-800 mb-6">Resiliency Blueprints</h2>
+            <nav id="main-nav" class="space-y-2">
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mb-2">Core Resilience</h3>
+                    <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Fault Tolerance & Isolation</a>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Scaling & Availability</h3>
+                    <a href="scaling.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Horizontal & Cross-Cluster</a>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Traffic & Deployment</h3>
+                    <a href="traffic.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Routing & Deployments</a>
+                </div>
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Validation</h3>
+                    <a href="validation.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Benchmarking & Chaos</a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Scaling & Availability</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">This section explores how to ensure your application is always available and can handle fluctuating demand. We'll cover automatic scaling within a single cluster (HPA), protecting applications during maintenance (PDBs), and strategies for achieving high availability across multiple clusters.</p>
+            </header>
+
+            <div id="content" class="space-y-16">
+                
+                <section id="hpa">
+                    <h2 class="text-3xl font-bold mb-2">Horizontal Scaling (HPA)</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">The Horizontal Pod Autoscaler (HPA) automatically adjusts the number of pod replicas based on observed metrics like CPU utilization. This is fundamental to cloud-native elasticity. Use the slider below to see how a change in the current metric value affects the number of desired replicas.</p>
+                     <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <div class="mb-4">
+                                    <label for="hpa-slider" class="block text-sm font-medium text-stone-700">Current Average CPU Utilization (%)</label>
+                                    <input id="hpa-slider" type="range" min="10" max="150" value="50" class="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer">
+                                </div>
+                                <div class="flex justify-between text-sm font-mono p-3 bg-stone-100 rounded-md">
+                                    <span>Current Replicas: <span id="hpa-current-replicas">3</span></span>
+                                    <span>Desired Replicas: <span id="hpa-desired-replicas" class="font-bold text-indigo-600">3</span></span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">Formula: `desired = ceil(current * (currentMetric / desiredMetric))`</p>
+                            </div>
+                            <div class="chart-container h-64 md:h-80">
+                                <canvas id="hpaChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="maintenance">
+                     <h2 class="text-3xl font-bold mb-2">Conservative Maintenance (PDB)</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">A Pod Disruption Budget (PDB) is a safety contract with Kubernetes that prevents voluntary disruptions (like node drains) from taking down too many replicas at once. Correctly configuring a PDB is vital for high availability, but an overly restrictive PDB can halt cluster maintenance.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg mb-4">PDB Configuration</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium">Total Replicas</label>
+                                <input type="number" id="pdb-replicas" value="10" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
+                            </div>
+                            <div class="flex items-end space-x-4">
+                                <div>
+                                    <label class="block text-sm font-medium">Max Unavailable</label>
+                                    <input type="text" id="pdb-max-unavailable" value="1" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
+                                    <p class="text-xs text-stone-500">Number or percentage (e.g., 25%)</p>
+                                </div>
+                                <button id="pdb-calc-button" class="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700">Calculate</button>
+                            </div>
+                        </div>
+                        <div id="pdb-result" class="mt-4 p-4 bg-indigo-50 rounded-md border border-indigo-200 text-indigo-800">
+                        </div>
+                    </div>
+                </section>
+
+                <section id="cross-cluster">
+                     <h2 class="text-3xl font-bold mb-2">Cross-Cluster Scaling</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">For ultimate high availability and scalability, workloads are distributed across multiple clusters. This introduces new challenges in node autoscaling, workload distribution, and traffic routing. The community is moving towards more modern, flexible solutions like Karpenter and GitOps.</p>
+                     <div class="grid md:grid-cols-2 gap-6">
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">Node Autoscaling: CA vs. Karpenter</h3>
+                             <table class="w-full text-sm text-left">
+                                 <thead class="text-xs text-stone-700 uppercase bg-stone-100">
+                                     <tr><th class="p-2">Feature</th><th class="p-2 font-bold">Cluster Autoscaler</th><th class="p-2 font-bold">Karpenter</th></tr>
+                                 </thead>
+                                 <tbody>
+                                     <tr class="border-b"><td class="p-2">Method</td><td class="p-2">Manages pre-defined Node Groups</td><td class="p-2">Provisions nodes just-in-time</td></tr>
+                                     <tr class="border-b"><td class="p-2">Efficiency</td><td class="p-2">Less efficient, group-based</td><td class="p-2">More efficient, instance-optimized</td></tr>
+                                     <tr><td class="p-2">Speed</td><td class="p-2">Slower</td><td class="p-2">Faster</td></tr>
+                                 </tbody>
+                             </table>
+                         </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-4">Workload Distribution</h3>
+                             <p class="text-sm text-stone-600">The de-facto standard for multi-cluster deployment is now <span class="font-bold text-indigo-600">GitOps</span> (using tools like ArgoCD or Flux), which provides a declarative, auditable, and consistent way to manage applications across a fleet of clusters.</p>
+                         </div>
+                     </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('hpaChart')) {
+        let hpaChart;
+        const hpaSlider = document.getElementById('hpa-slider');
+        const hpaCurrentReplicasEl = document.getElementById('hpa-current-replicas');
+        const hpaDesiredReplicasEl = document.getElementById('hpa-desired-replicas');
+        const desiredMetric = 50;
+
+        function createHpaChart() {
+            const ctx = document.getElementById('hpaChart').getContext('2d');
+            hpaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['CPU Utilization'],
+                    datasets: [
+                        { label: 'Current Avg', data: [50], backgroundColor: 'rgba(59, 130, 246, 0.5)', borderColor: 'rgb(59, 130, 246)', borderWidth: 1 },
+                        { label: 'Desired Target', data: [desiredMetric], backgroundColor: 'rgba(236, 72, 153, 0.5)', borderColor: 'rgb(236, 72, 153)', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false, indexAxis: 'y',
+                    scales: { x: { beginAtZero: true, max: 160, title: { display: true, text: 'Utilization (%)' } } },
+                    plugins: { legend: { display: false }, title: { display: true, text: 'HPA Metrics' } }
+                }
+            });
+        }
+
+        function updateHpa() {
+            const currentMetric = parseInt(hpaSlider.value);
+            const currentReplicas = parseInt(hpaCurrentReplicasEl.textContent);
+            const desiredReplicas = Math.ceil(currentReplicas * (currentMetric / desiredMetric));
+            
+            hpaDesiredReplicasEl.textContent = desiredReplicas;
+            hpaChart.data.datasets[0].data[0] = currentMetric;
+            hpaChart.update();
+        }
+
+        hpaSlider.addEventListener('input', updateHpa);
+        createHpaChart();
+        updateHpa();
+    }
+
+    if (document.getElementById('pdb-calc-button')) {
+        function calculatePdb() {
+            const replicas = parseInt(document.getElementById('pdb-replicas').value);
+            const maxUnavailableInput = document.getElementById('pdb-max-unavailable').value;
+            const resultEl = document.getElementById('pdb-result');
+
+            if (isNaN(replicas) || replicas <= 0) {
+                resultEl.innerHTML = 'Please enter a valid number of replicas.'; return;
+            }
+
+            let maxUnavailable;
+            if (maxUnavailableInput.includes('%')) {
+                const percentage = parseInt(maxUnavailableInput.replace('%', ''));
+                if (isNaN(percentage)) { resultEl.innerHTML = 'Invalid percentage for Max Unavailable.'; return; }
+                maxUnavailable = Math.floor(replicas * (percentage / 100));
+            } else {
+                maxUnavailable = parseInt(maxUnavailableInput);
+                if (isNaN(maxUnavailable)) { resultEl.innerHTML = 'Invalid number for Max Unavailable.'; return; }
+            }
+            
+            const minAvailable = replicas - maxUnavailable;
+            resultEl.innerHTML = `With <strong>${replicas}</strong> total replicas and a <strong>maxUnavailable</strong> of <strong>${maxUnavailable}</strong>, you must have at least <strong>${minAvailable}</strong> pods running at all times.`;
+        }
+
+        document.getElementById('pdb-calc-button').addEventListener('click', calculatePdb);
+        calculatePdb();
+    }
+});
+</script>
+
+</body>
+</html>

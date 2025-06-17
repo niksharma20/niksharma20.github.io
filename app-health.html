@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Health | K8s Resiliency Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .tab.active { border-color: #4338CA; color: #4338CA; background-color: #EEF2FF; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-64 bg-white shadow-md p-4 hidden lg:block overflow-y-auto">
+            <h2 class="text-xl font-bold text-indigo-800 mb-6">Resiliency Blueprints</h2>
+            <nav id="main-nav" class="space-y-1">
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mb-2">Core Resilience</h3>
+                    <a href="fault-tolerance.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Fault Tolerance</a>
+                    <a href="fault-isolation.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Fault Isolation</a>
+                    <a href="app-health.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Application Health</a>
+                    <a href="auto-recovery.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Automated Recovery</a>
+                    <a href="qos.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Quality of Service</a>
+                    <a href="resource-management.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Resource Management</a>
+                </div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Scaling & Availability</h3><a href="scaling.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Horizontal & Cross-Cluster</a></div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Traffic & Deployment</h3><a href="traffic.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Routing & Deployments</a></div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Validation</h3><a href="validation.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Benchmarking & Chaos</a></div>
+            </nav>
+        </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Application Health</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">For Kubernetes to perform its self-healing magic, it needs to understand your application's health. Probes are the mechanism for this, forming a three-part "contract" that defines the application's lifecycle state and tells Kubernetes how to respond.</p>
+            </header>
+
+            <div id="content" class="space-y-16">
+                <section id="app-health-probes">
+                    <h2 class="text-3xl font-bold mb-2">The Three-Probe Contract</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">Failing to provide health probes is a critical anti-pattern. Each of the three probes tells Kubernetes a different piece of information about the application's state, dictating the correct automated action to take.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                         <div class="mb-4 border-b border-stone-200">
+                            <nav class="flex space-x-2" id="probe-tabs">
+                                <button data-target="startup" class="tab py-2 px-4 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Startup Probe</button>
+                                <button data-target="readiness" class="tab py-2 px-4 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Readiness Probe</button>
+                                <button data-target="liveness" class="tab py-2 px-4 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Liveness Probe</button>
+                            </nav>
+                        </div>
+                        <div id="probe-content"></div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const probeData = {
+        startup: {
+            title: 'Clause 1: The Startup Contract',
+            text: "The `startupProbe` tells Kubernetes: \"I need time to initialize. Don't run other probes or send traffic until I'm done.\" This is crucial for slow-starting apps to prevent them from being killed prematurely.",
+            code: `startupProbe:\n  httpGet:\n    path: /healthz\n    port: 8080\n  failureThreshold: 30\n  periodSeconds: 10`
+        },
+        readiness: {
+            title: 'Clause 2: The Readiness Contract',
+            text: "The `readinessProbe` says: \"I'm running, but only send me traffic when this probe passes.\" If it fails, Kubernetes removes the pod from the service endpoint but does *not* restart it.",
+            code: `readinessProbe:\n  httpGet:\n    path: /readyz\n    port: 8080\n  periodSeconds: 5\n  failureThreshold: 3`
+        },
+        liveness: {
+            title: 'Clause 3: The Liveness Contract',
+            text: "The `livenessProbe` is the last resort: \"If this probe fails, I am in an unrecoverable state, like a deadlock, and must be restarted.\" A failing liveness probe is the only thing that causes the kubelet to restart the container.",
+            code: `livenessProbe:\n  httpGet:\n    path: /healthz\n    port: 8080\n  initialDelaySeconds: 15\n  periodSeconds: 20`
+        }
+    };
+
+    if (document.getElementById('probe-tabs')) {
+        const probeTabsContainer = document.getElementById('probe-tabs');
+        const probeContentContainer = document.getElementById('probe-content');
+        
+        function updateProbeContent(probeName) {
+            const data = probeData[probeName];
+            probeContentContainer.innerHTML = `
+                <h4 class="font-semibold text-lg mb-2 text-indigo-700">${data.title}</h4>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <p class="text-stone-600">${data.text}</p>
+                    <pre class="bg-stone-800 text-white p-4 rounded-md text-xs overflow-x-auto"><code>${data.code}</code></pre>
+                </div>`;
+            probeTabsContainer.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.dataset.target === probeName) t.classList.add('active');
+            });
+        }
+        probeTabsContainer.addEventListener('click', e => {
+            if (e.target.classList.contains('tab')) updateProbeContent(e.target.dataset.target);
+        });
+        updateProbeContent('startup');
+    }
+});
+</script>
+
+</body>
+</html>

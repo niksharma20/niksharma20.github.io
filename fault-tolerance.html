@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fault Tolerance | K8s Resiliency Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-64 bg-white shadow-md p-4 hidden lg:block overflow-y-auto">
+            <h2 class="text-xl font-bold text-indigo-800 mb-6">Resiliency Blueprints</h2>
+            <nav id="main-nav" class="space-y-1">
+                <div>
+                    <h3 class="text-xs uppercase text-stone-500 font-semibold mb-2">Core Resilience</h3>
+                    <a href="fault-tolerance.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Fault Tolerance</a>
+                    <a href="fault-isolation.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Fault Isolation</a>
+                    <a href="app-health.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Application Health</a>
+                    <a href="auto-recovery.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Automated Recovery</a>
+                    <a href="qos.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Quality of Service</a>
+                    <a href="resource-management.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors text-sm">Resource Management</a>
+                </div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Scaling & Availability</h3><a href="scaling.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Horizontal & Cross-Cluster</a></div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Traffic & Deployment</h3><a href="traffic.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Routing & Deployments</a></div>
+                <div><h3 class="text-xs uppercase text-stone-500 font-semibold mt-4 mb-2">Validation</h3><a href="validation.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 transition-colors">Benchmarking & Chaos</a></div>
+            </nav>
+        </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Fault Tolerance</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">Fault tolerance is the ability of a system to withstand the failure of its subsystems and continue to operate correctly. This is about ensuring continuity in the face of failure, often achieved through redundancy and dynamic response patterns like the Circuit Breaker.</p>
+            </header>
+
+            <div id="content" class="space-y-16">
+                <section id="circuit-breaker">
+                    <h2 class="text-3xl font-bold mb-2">The Circuit Breaker Pattern</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">The Circuit Breaker pattern is a critical fault tolerance mechanism that prevents an application from repeatedly trying to call a service that it knows is failing. It acts as a stateful proxy that trips when failure thresholds are exceeded, giving the downstream service time to recover and preventing a cascading failure. Interact with the visualization below to see its three states.</p>
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="text-xl font-semibold mb-3 text-center">Circuit Breaker State Machine</h3>
+                            <div id="circuit-breaker-viz" class="flex flex-col justify-around items-center h-48 p-4 rounded-md cursor-pointer transition-colors duration-300">
+                                <!-- Interactive element will be rendered here by JS -->
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="p-4 bg-green-50 border-l-4 border-green-500">
+                                <h4 class="font-bold">1. Closed State</h4>
+                                <p class="text-sm text-stone-600">Requests flow normally. The circuit breaker monitors for failures.</p>
+                            </div>
+                             <div class="p-4 bg-red-50 border-l-4 border-red-500">
+                                <h4 class="font-bold">2. Open State</h4>
+                                <p class="text-sm text-stone-600">After enough failures, the circuit "opens." Subsequent calls fail immediately without being attempted.</p>
+                            </div>
+                             <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500">
+                                <h4 class="font-bold">3. Half-Open State</h4>
+                                <p class="text-sm text-stone-600">After a timeout, a limited number of test requests are allowed. If they succeed, the circuit closes. If they fail, it re-opens.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('circuit-breaker-viz')) {
+        const circuitBreakerViz = document.getElementById('circuit-breaker-viz');
+        let circuitState = 0;
+        const states = [
+            { name: 'Closed', color: 'bg-green-100', border: 'border-green-300', text: 'All Good 👍', desc: 'Flowing Normally' },
+            { name: 'Open', color: 'bg-red-100', border: 'border-red-300', text: 'Tripped! ⛔️', desc: 'Calls Failing Fast' },
+            { name: 'Half-Open', color: 'bg-yellow-100', border: 'border-yellow-300', text: 'Testing... 🤔', desc: 'Sending Probe' }
+        ];
+
+        function updateCircuitBreaker() {
+            const state = states[circuitState];
+            circuitBreakerViz.className = `flex flex-col justify-center items-center h-48 p-4 rounded-lg shadow-inner cursor-pointer transition-colors duration-300 ${state.color} border-2 ${state.border}`;
+            circuitBreakerViz.innerHTML = `
+                <span class="font-bold text-3xl">${state.text}</span>
+                <span class="mt-2 text-stone-700">State: ${state.name}</span>
+                <span class="font-mono text-sm text-stone-500">${state.desc}</span>
+                <span class="text-xs text-stone-400 mt-4">(Click to transition)</span>
+            `;
+        }
+        
+        circuitBreakerViz.addEventListener('click', () => {
+            circuitState = (circuitState + 1) % states.length;
+            updateCircuitBreaker();
+        });
+        updateCircuitBreaker();
+    }
+});
+</script>
+
+</body>
+</html>
