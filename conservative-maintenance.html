@@ -149,6 +149,7 @@
     </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -176,45 +177,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
+                }
             }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
+            current = current.parentElement;
         }
     }
-    
-    // Page-specific JS for PDB Calculator
-    if (document.getElementById('pdb-calc-button')) {
-        function calculatePdb() {
-            const replicas = parseInt(document.getElementById('pdb-replicas').value);
-            const maxUnavailableInput = document.getElementById('pdb-max-unavailable').value;
-            const resultEl = document.getElementById('pdb-result');
-
-            if (isNaN(replicas) || replicas <= 0) {
-                resultEl.innerHTML = 'Please enter a valid number of replicas.'; return;
-            }
-
-            let maxUnavailable;
-            if (maxUnavailableInput.includes('%')) {
-                const percentage = parseInt(maxUnavailableInput.replace('%', ''));
-                if (isNaN(percentage)) { resultEl.innerHTML = 'Invalid percentage.'; return; }
-                maxUnavailable = Math.floor(replicas * (percentage / 100));
-            } else {
-                maxUnavailable = parseInt(maxUnavailableInput);
-                if (isNaN(maxUnavailable)) { resultEl.innerHTML = 'Invalid number.'; return; }
-            }
-            
-            const minAvailable = replicas - maxUnavailable;
-            resultEl.innerHTML = `With <strong>${replicas}</strong> total replicas and a <strong>maxUnavailable</strong> of <strong>${maxUnavailable}</strong>, you must have at least <strong>${minAvailable}</strong> pods running during a voluntary disruption.`;
-        }
-        document.getElementById('pdb-calc-button').addEventListener('click', calculatePdb);
-        calculatePdb();
-    }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>

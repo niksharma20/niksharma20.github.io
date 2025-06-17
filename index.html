@@ -145,6 +145,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -172,17 +173,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
+                }
             }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
+            current = current.parentElement;
         }
     }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>

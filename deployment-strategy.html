@@ -143,6 +143,7 @@
     </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -170,51 +171,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
-            }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
-        }
-    }
-    
-    // Page-specific JS for Deployment Chart
-    if (document.getElementById('deploymentChart')) {
-        const deploymentStrategyData = {
-            labels: ['Low Risk', 'Low Cost', 'High Speed', 'Fast Rollback', 'Low Complexity'],
-            datasets: [
-                { label: 'Rolling Update', data: [3, 5, 2, 2, 5], backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: 'rgb(59, 130, 246)', pointBackgroundColor: 'rgb(59, 130, 246)' },
-                { label: 'Blue/Green', data: [2, 1, 5, 5, 3], backgroundColor: 'rgba(34, 197, 94, 0.2)', borderColor: 'rgb(34, 197, 94)', pointBackgroundColor: 'rgb(34, 197, 94)' },
-                { label: 'Canary', data: [5, 4, 1, 5, 1], backgroundColor: 'rgba(249, 115, 22, 0.2)', borderColor: 'rgb(249, 115, 22)', pointBackgroundColor: 'rgb(249, 115, 22)' }
-            ]
-        };
-        const strategyNameMapping = { 'rolling': 'Rolling Update', 'bluegreen': 'Blue/Green', 'canary': 'Canary' };
-        let deploymentChart;
-
-        function createDeploymentChart() {
-            const ctx = document.getElementById('deploymentChart').getContext('2d');
-            deploymentChart = new Chart(ctx, {
-                type: 'radar', data: { labels: deploymentStrategyData.labels, datasets: [] },
-                options: {
-                    maintainAspectRatio: false,
-                    scales: { r: { angleLines: { color: 'rgba(0, 0, 0, 0.1)' }, grid: { color: 'rgba(0, 0, 0, 0.1)' }, pointLabels: { font: { size: 12 } }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, backdropColor: 'transparent' } } },
-                    plugins: { legend: { position: 'top' } }
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
                 }
-            });
-            updateDeploymentChart();
+            }
+            current = current.parentElement;
         }
-        function updateDeploymentChart() {
-            const selectedStrategies = Array.from(document.querySelectorAll('#strategy-selector input:checked')).map(input => strategyNameMapping[input.value]);
-            deploymentChart.data.datasets = deploymentStrategyData.datasets.filter(d => selectedStrategies.includes(d.label));
-            deploymentChart.update();
-        }
-        document.getElementById('strategy-selector').addEventListener('change', updateDeploymentChart);
-        createDeploymentChart();
     }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>

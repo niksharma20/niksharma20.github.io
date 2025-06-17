@@ -150,6 +150,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -177,45 +178,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
+                }
             }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
+            current = current.parentElement;
         }
     }
-
-    // Page-specific JS for Circuit Breaker
-    if (document.getElementById('circuit-breaker-viz')) {
-        const circuitBreakerViz = document.getElementById('circuit-breaker-viz');
-        let circuitState = 0;
-        const states = [
-            { name: 'Closed', color: 'bg-green-100', border: 'border-green-300', text: 'All Good 👍', desc: 'Flowing Normally' },
-            { name: 'Open', color: 'bg-red-100', border: 'border-red-300', text: 'Tripped! ⛔️', desc: 'Calls Failing Fast' },
-            { name: 'Half-Open', color: 'bg-yellow-100', border: 'border-yellow-300', text: 'Testing... 🤔', desc: 'Sending Probe' }
-        ];
-
-        function updateCircuitBreaker() {
-            const state = states[circuitState];
-            circuitBreakerViz.className = `flex flex-col justify-center items-center h-48 p-4 rounded-lg shadow-inner cursor-pointer transition-colors duration-300 ${state.color} border-2 ${state.border}`;
-            circuitBreakerViz.innerHTML = `
-                <span class="font-bold text-3xl">${state.text}</span>
-                <span class="mt-2 text-stone-700">State: ${state.name}</span>
-                <span class="font-mono text-sm text-stone-500">${state.desc}</span>
-                <span class="text-xs text-stone-400 mt-4">(Click to transition)</span>
-            `;
-        }
-        
-        circuitBreakerViz.addEventListener('click', () => {
-            circuitState = (circuitState + 1) % states.length;
-            updateCircuitBreaker();
-        });
-        updateCircuitBreaker();
-    }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>

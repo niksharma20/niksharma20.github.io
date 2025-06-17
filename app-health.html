@@ -140,6 +140,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -167,59 +168,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
+                }
             }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
+            current = current.parentElement;
         }
     }
-
-    // Page-specific JS for Health Probes
-    const probeData = {
-        startup: {
-            title: 'Clause 1: The Startup Contract',
-            text: "The `startupProbe` tells Kubernetes: \"I need time to initialize. Don't run other probes or send traffic until I'm done.\" This is crucial for slow-starting apps to prevent them from being killed prematurely.",
-            code: `startupProbe:\n  httpGet:\n    path: /healthz\n    port: 8080\n  failureThreshold: 30\n  periodSeconds: 10`
-        },
-        readiness: {
-            title: 'Clause 2: The Readiness Contract',
-            text: "The `readinessProbe` says: \"I'm running, but only send me traffic when this probe passes.\" If it fails, Kubernetes removes the pod from the service endpoint but does *not* restart it.",
-            code: `readinessProbe:\n  httpGet:\n    path: /readyz\n    port: 8080\n  periodSeconds: 5\n  failureThreshold: 3`
-        },
-        liveness: {
-            title: 'Clause 3: The Liveness Contract',
-            text: "The `livenessProbe` is the last resort: \"If this probe fails, I am in an unrecoverable state, like a deadlock, and must be restarted.\" A failing liveness probe is the only thing that causes the kubelet to restart the container.",
-            code: `livenessProbe:\n  httpGet:\n    path: /healthz\n    port: 8080\n  initialDelaySeconds: 15\n  periodSeconds: 20`
-        }
-    };
-
-    if (document.getElementById('probe-tabs')) {
-        const probeTabsContainer = document.getElementById('probe-tabs');
-        const probeContentContainer = document.getElementById('probe-content');
-        
-        function updateProbeContent(probeName) {
-            const data = probeData[probeName];
-            probeContentContainer.innerHTML = `
-                <h4 class="font-semibold text-lg mb-2 text-indigo-700">${data.title}</h4>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <p class="text-stone-600">${data.text}</p>
-                    <pre class="bg-stone-800 text-white p-4 rounded-md text-xs overflow-x-auto"><code>${data.code}</code></pre>
-                </div>`;
-            probeTabsContainer.querySelectorAll('.tab').forEach(t => {
-                t.classList.remove('active');
-                if (t.dataset.target === probeName) t.classList.add('active');
-            });
-        }
-        probeTabsContainer.addEventListener('click', e => {
-            if (e.target.classList.contains('tab')) updateProbeContent(e.target.dataset.target);
-        });
-        updateProbeContent('startup');
-    }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>

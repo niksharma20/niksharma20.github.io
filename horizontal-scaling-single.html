@@ -161,6 +161,7 @@
     </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // --- START: NEW SCRIPT ---
     function setupCollapsibleNav(headerId, linksId) {
         const header = document.getElementById(headerId);
         if (!header) return;
@@ -188,56 +189,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Automatically open the path to the active page
     const activeLink = document.querySelector('.nav-link.active-page');
     if (activeLink) {
-        let parent = activeLink.closest('.nav-subcategory, #links-tech-blogs');
-        while (parent) {
-            parent.classList.remove('hidden');
-            const header = parent.previousElementSibling;
-            if (header && header.classList.contains('nav-category-header')) {
-                const arrow = header.querySelector('.arrow');
-                if (arrow) arrow.classList.add('rotate-180');
-            }
-            parent = parent.parentElement.closest('.nav-subcategory, #links-tech-blogs');
-        }
-    }
-    
-    // Page-specific JS for HPA Chart
-    if (document.getElementById('hpaChart')) {
-        let hpaChart;
-        const hpaSlider = document.getElementById('hpa-slider');
-        const hpaCurrentReplicasEl = document.getElementById('hpa-current-replicas');
-        const hpaDesiredReplicasEl = document.getElementById('hpa-desired-replicas');
-        const desiredMetric = 50;
-
-        function createHpaChart() {
-            const ctx = document.getElementById('hpaChart').getContext('2d');
-            hpaChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['CPU Utilization'],
-                    datasets: [
-                        { label: 'Current Avg', data: [50], backgroundColor: 'rgba(59, 130, 246, 0.5)', borderColor: 'rgb(59, 130, 246)', borderWidth: 1 },
-                        { label: 'Desired Target', data: [desiredMetric], backgroundColor: 'rgba(236, 72, 153, 0.5)', borderColor: 'rgb(236, 72, 153)', borderWidth: 1 }
-                    ]
-                },
-                options: {
-                    maintainAspectRatio: false, indexAxis: 'y',
-                    scales: { x: { beginAtZero: true, max: 160, title: { display: true, text: 'Utilization (%)' } } },
-                    plugins: { legend: { display: false }, title: { display: true, text: 'HPA Metrics' } }
+        let current = activeLink;
+        // Walk up from the active link to the main nav container
+        while (current && current.id !== 'main-nav') {
+            // Check if the current element is a collapsible link container
+            if (current.id && current.id.startsWith('links-')) {
+                current.classList.remove('hidden');
+                // Find the corresponding header and rotate its arrow
+                const header = current.previousElementSibling;
+                if (header && header.classList.contains('nav-category-header')) {
+                    const arrow = header.querySelector('.arrow');
+                    if (arrow) arrow.classList.add('rotate-180');
                 }
-            });
+            }
+            current = current.parentElement;
         }
-        function updateHpa() {
-            const currentMetric = parseInt(hpaSlider.value);
-            const currentReplicas = parseInt(hpaCurrentReplicasEl.textContent);
-            const desiredReplicas = Math.ceil(currentReplicas * (currentMetric / desiredMetric));
-            hpaDesiredReplicasEl.textContent = desiredReplicas;
-            hpaChart.data.datasets[0].data[0] = currentMetric;
-            hpaChart.update();
-        }
-        hpaSlider.addEventListener('input', updateHpa);
-        createHpaChart();
-        updateHpa();
     }
+    // --- END: NEW SCRIPT ---
 });
 </script>
 </body>
