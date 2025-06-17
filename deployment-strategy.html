@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Strategies | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+        .strategy-checkbox:checked + label { background-color: #4338CA; color: white; border-color: #4338CA; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- This navigation is for context. It will be updated in the final index.html -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Traffic & Deployment</h3>
+                <a href="service-discovery.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Service Discovery</a>
+                <a href="traffic-flow.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">North-South & East-West Traffic</a>
+                <a href="deployment-strategy.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Deployment Strategies</a>
+                <a href="rate-limiting.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Rate Limiting & Throttling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Deployment Strategies</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">The method used to update a running application is a critical factor in its availability. The optimal strategy depends on the application's architecture, its tolerance for downtime, and the organization's risk appetite.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="deployment-comparison">
+                    <h2 class="text-3xl font-bold mb-2">Comparative Analysis of Strategies</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">Choosing the right approach involves trade-offs between risk, cost, speed, and complexity. Select strategies below to compare them visually on the radar chart based on these key characteristics.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="md:col-span-1">
+                                <h3 class="font-semibold text-lg mb-4">Choose Strategies:</h3>
+                                <div class="space-y-2" id="strategy-selector">
+                                    <div><input type="checkbox" id="strat-rolling" value="rolling" class="hidden strategy-checkbox" checked><label for="strat-rolling" class="block p-3 border rounded-md cursor-pointer transition-all">Rolling Update</label></div>
+                                    <div><input type="checkbox" id="strat-bluegreen" value="bluegreen" class="hidden strategy-checkbox" checked><label for="strat-bluegreen" class="block p-3 border rounded-md cursor-pointer transition-all">Blue/Green</label></div>
+                                    <div><input type="checkbox" id="strat-canary" value="canary" class="hidden strategy-checkbox" checked><label for="strat-canary" class="block p-3 border rounded-md cursor-pointer transition-all">Canary</label></div>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2 chart-container"><canvas id="deploymentChart"></canvas></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('deploymentChart')) {
+        const deploymentStrategyData = {
+            labels: ['Low Risk', 'Low Cost', 'High Speed', 'Fast Rollback', 'Low Complexity'],
+            datasets: [
+                { label: 'Rolling Update', data: [3, 5, 2, 2, 5], backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: 'rgb(59, 130, 246)', pointBackgroundColor: 'rgb(59, 130, 246)' },
+                { label: 'Blue/Green', data: [2, 1, 5, 5, 3], backgroundColor: 'rgba(34, 197, 94, 0.2)', borderColor: 'rgb(34, 197, 94)', pointBackgroundColor: 'rgb(34, 197, 94)' },
+                { label: 'Canary', data: [5, 4, 1, 5, 1], backgroundColor: 'rgba(249, 115, 22, 0.2)', borderColor: 'rgb(249, 115, 22)', pointBackgroundColor: 'rgb(249, 115, 22)' }
+            ]
+        };
+        const strategyNameMapping = { 'rolling': 'Rolling Update', 'bluegreen': 'Blue/Green', 'canary': 'Canary' };
+        let deploymentChart;
+
+        function createDeploymentChart() {
+            const ctx = document.getElementById('deploymentChart').getContext('2d');
+            deploymentChart = new Chart(ctx, {
+                type: 'radar', data: { labels: deploymentStrategyData.labels, datasets: [] },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { r: { angleLines: { color: 'rgba(0, 0, 0, 0.1)' }, grid: { color: 'rgba(0, 0, 0, 0.1)' }, pointLabels: { font: { size: 12 } }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, backdropColor: 'transparent' } } },
+                    plugins: { legend: { position: 'top' } }
+                }
+            });
+            updateDeploymentChart();
+        }
+        function updateDeploymentChart() {
+            const selectedStrategies = Array.from(document.querySelectorAll('#strategy-selector input:checked')).map(input => strategyNameMapping[input.value]);
+            deploymentChart.data.datasets = deploymentStrategyData.datasets.filter(d => selectedStrategies.includes(d.label));
+            deploymentChart.update();
+        }
+        document.getElementById('strategy-selector').addEventListener('change', updateDeploymentChart);
+        createDeploymentChart();
+    }
+});
+</script>
+</body>
+</html>

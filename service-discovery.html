@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Discovery | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- This navigation is for context. It will be updated in the final index.html -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Traffic & Deployment</h3>
+                <a href="service-discovery.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Service Discovery</a>
+                <a href="traffic-flow.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">North-South & East-West Traffic</a>
+                <a href="deployment-strategy.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Deployment Strategies</a>
+                <a href="rate-limiting.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Rate Limiting & Throttling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Service Discovery</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">Service discovery is the foundational mechanism that enables communication in a dynamic Kubernetes environment. It provides a stable abstraction over ephemeral pods, allowing services to reliably find and connect with each other.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="service-discovery-mechanism">
+                    <h2 class="text-3xl font-bold mb-2">The Service & DNS Mechanism</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">Pods are ephemeral and get new IPs on restart. The Kubernetes `Service` object provides a stable endpoint, and the internal DNS (CoreDNS) makes discovery seamless. This loose coupling is the foundation upon which all other resiliency patterns are built.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                         <div class="flex flex-col md:flex-row items-center gap-6 p-4 bg-stone-50 rounded-lg flex-wrap justify-center">
+                             <div class="text-center"><p class="font-mono">Client Pod</p><div class="w-20 h-20 bg-blue-200 rounded-md flex items-center justify-center text-3xl">💻</div></div>
+                             <div class="text-center font-mono text-2xl text-stone-400">→</div>
+                             <div class="text-center"><p class="font-mono">DNS Lookup:</p><code class="text-sm text-indigo-700 bg-indigo-100 p-2 rounded">http://my-service</code></div>
+                             <div class="text-center font-mono text-2xl text-stone-400">→</div>
+                             <div class="text-center"><p class="font-mono">K8s Service</p><div class="w-20 h-20 bg-purple-200 rounded-md flex items-center justify-center text-3xl">🎯</div><p class="font-mono text-sm">Stable ClusterIP</p></div>
+                             <div class="text-center font-mono text-2xl text-stone-400">→</div>
+                             <div class="text-center"><p class="font-mono">Backend Pods</p><div class="flex gap-2"><div class="w-16 h-16 bg-green-200 rounded-md flex items-center justify-center text-2xl">📦</div><div class="w-16 h-16 bg-green-200 rounded-md flex items-center justify-center text-2xl">📦</div><div class="w-16 h-16 bg-red-200 rounded-md flex items-center justify-center text-2xl">☠️</div></div><p class="font-mono text-sm">Ephemeral IPs</p></div>
+                         </div>
+                    </div>
+                </section>
+                 <section id="service-types">
+                    <h2 class="text-3xl font-bold mb-2">Analysis of Service Types</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">Kubernetes provides different types of `Service` objects, each designed for a specific use case, from internal communication to external exposure.</p>
+                     <div class="grid md:grid-cols-2 gap-6">
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-2">ClusterIP</h3>
+                             <p class="text-sm text-stone-600">The default type. Exposes the service on a cluster-internal IP, making it reachable only from within the cluster. Ideal for East-West communication.</p>
+                         </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-2">LoadBalancer</h3>
+                             <p class="text-sm text-stone-600">Provisions an external load balancer from the cloud provider (e.g., AWS ELB). This is the standard way to expose a service to the internet.</p>
+                         </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-2">NodePort</h3>
+                             <p class="text-sm text-stone-600">Exposes the service on a static port on each node's IP. Generally used for development or as a building block for other ingress solutions.</p>
+                         </div>
+                         <div class="bg-white p-6 rounded-lg shadow-lg">
+                             <h3 class="font-semibold text-lg mb-2">Headless</h3>
+                             <p class="text-sm text-stone-600">Created by setting `clusterIP: None`. DNS resolves to the IPs of the individual pods, not a single virtual IP. Used when clients need to connect to specific stateful instances.</p>
+                         </div>
+                     </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

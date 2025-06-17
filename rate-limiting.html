@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Limiting & Throttling | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- This navigation is for context. It will be updated in the final index.html -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Traffic & Deployment</h3>
+                <a href="service-discovery.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Service Discovery</a>
+                <a href="traffic-flow.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">North-South & East-West Traffic</a>
+                <a href="deployment-strategy.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Deployment Strategies</a>
+                <a href="rate-limiting.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Rate Limiting & Throttling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: Rate Limiting & Throttling</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">To protect services from being overwhelmed by excessive traffic—whether malicious or simply unexpected—it is essential to implement controls at the edge of the cluster.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="rate-limiting-concepts">
+                    <h2 class="text-3xl font-bold mb-2">Rate Limiting vs. Throttling</h2>
+                     <p class="text-stone-600 mb-6 max-w-3xl">These related techniques are implemented at the API Gateway or Ingress Controller to protect backend services from traffic floods.</p>
+                     <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="font-semibold text-lg mb-4">Rate Limiting</h3>
+                            <p class="text-sm text-stone-600">Enforces a hard cap on requests. If the limit is exceeded, subsequent requests are rejected (e.g., HTTP 429). Its goal is to enforce usage policies and prevent abuse.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="font-semibold text-lg mb-4">Throttling</h3>
+                             <p class="text-sm text-stone-600">A dynamic technique to regulate request flow. It slows down or queues requests to prevent overwhelming the system, smoothing out bursts to maintain availability.</p>
+                        </div>
+                    </div>
+                </section>
+                <section id="rate-limiting-resiliency">
+                     <h2 class="text-3xl font-bold mb-2">Rate Limiting as a Resiliency Pattern</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">Beyond security, rate limiting is a fundamental resiliency pattern. It functions as a programmatic bulkhead at the network edge, shielding backend services from traffic spikes that could cause cascading failures.</p>
+                     <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h3 class="font-semibold text-lg mb-4">Protecting Backend Services</h3>
+                        <p class="text-stone-600">By enforcing a hard cap on requests per second, a rate limiter ensures that application pods are never subjected to a higher load than they are provisioned to handle. This prevents resource exhaustion, pod crashes, and OOMKills, enhancing the stability of the entire system.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

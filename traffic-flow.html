@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Flow | K8s Resiliency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- This navigation is for context. It will be updated in the final index.html -->
+            <nav class="space-y-2">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
+                <!-- Other main links -->
+                <h3 class="text-xs uppercase text-stone-500 font-semibold pt-4 mb-2">Traffic & Deployment</h3>
+                <a href="service-discovery.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Service Discovery</a>
+                <a href="traffic-flow.html" class="nav-link active-page block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">North-South & East-West Traffic</a>
+                <a href="deployment-strategy.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Deployment Strategies</a>
+                <a href="rate-limiting.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Rate Limiting & Throttling</a>
+            </nav>
+        </aside>
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Blueprint: North-South & East-West Traffic</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">Understanding and managing the flow of network traffic is central to both the security and reliability of a Kubernetes application, distinguishing between traffic entering the cluster and traffic moving within it.</p>
+            </header>
+            <div id="content" class="space-y-16">
+                <section id="traffic-management">
+                    <h2 class="text-3xl font-bold mb-2">Managing Traffic Flows</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">The new Gateway API is succeeding Ingress for North-South (external) traffic, offering a more powerful and portable standard. A Service Mesh is the standard for securing and controlling East-West (internal) traffic.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="font-semibold text-lg mb-4">North-South (Ingress/Egress)</h3>
+                            <p class="text-sm text-stone-600 mb-4">Managed by an API Gateway or Ingress Controller. The Gateway API provides a role-oriented model that is ideal for multi-team environments, separating infrastructure concerns from application routing.</p>
+                            <div class="font-mono text-xs p-4 bg-stone-100 rounded-md">
+                                User → Internet → <span class="font-bold text-indigo-600">[Gateway API]</span> → Service
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-lg">
+                            <h3 class="font-semibold text-lg mb-4">East-West (Internal)</h3>
+                            <p class="text-sm text-stone-600 mb-4">Managed by a Service Mesh (e.g., Istio, Linkerd). The mesh provides mTLS security, observability, and fine-grained traffic control (retries, timeouts) for all service-to-service communication via sidecar proxies.</p>
+                            <div class="font-mono text-xs p-4 bg-stone-100 rounded-md">
+                                Service A → <span class="font-bold text-purple-600">[Service Mesh Sidecar]</span> → Service B
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                 <section id="gamma-initiative">
+                    <h2 class="text-3xl font-bold mb-2">Convergence: The GAMMA Initiative</h2>
+                    <p class="text-stone-600 mb-6 max-w-3xl">The GAMMA (Gateway API for Mesh Management and Administration) initiative aims to unify North-South and East-West traffic management by using the same Gateway API resources (e.g., `HTTPRoute`) to configure both the API Gateway and the Service Mesh. This promises a future with a single, portable API for all L7 routing.</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                         <h3 class="font-semibold text-lg mb-4">A Unified Routing Model</h3>
+                        <p class="text-stone-600">In the GAMMA model, an `HTTPRoute` can be attached to a `Gateway` to manage ingress traffic, or attached directly to a `Service` to manage internal, mesh-controlled traffic. This eliminates API fragmentation and cognitive overhead for developers.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
