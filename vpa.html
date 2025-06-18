@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Resource Management Game | Nikhil Sharma</title>
+    <title>Interactive VPA Simulation | Nikhil Sharma</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .progress-bar-bg { background-color: #e9ecef; }
-        .progress-bar { transition: width 0.5s ease-in-out; }
-        .hierarchy-box { 
-            transition: all 0.2s ease-in-out; 
-            cursor: pointer;
-        }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .nav-category-header { cursor: pointer; }
+        .arrow.rotate-180 { transform: rotate(180deg); }
+        .control-btn.active { background-color: #4F46E5; color: white; border-color: #4F46E5; }
+        .hierarchy-box { transition: all 0.2s ease-in-out; cursor: pointer; }
         .hierarchy-box:hover, .hierarchy-box.active {
             transform: scale(1.02);
             border-width: 3px;
@@ -24,161 +23,71 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.5s; }
         .static-tab.active { border-color: #4338CA; color: #4338CA; background-color: #EEF2FF; font-weight: 600; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .flow-step { transition: all 0.2s ease-in-out; }
+        .flow-step:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse-bg {
+            0%, 100% { background-color: #F9FAFB; }
+            50% { background-color: #F3F4F6; }
         }
+        .workload-running { animation: pulse-bg 2s infinite; }
+        @keyframes flash-restart {
+            0% { background-color: #FEF2F2; }
+            50% { background-color: #FEE2E2; }
+            100% { background-color: #FEF2F2; }
+        }
+        .pod-restarting { animation: flash-restart 0.5s 2; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
     <div class="flex">
         <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
-            <!-- Master Navigation (for context) -->
+            <!-- Master Navigation Start -->
             <div class="flex items-center gap-4 mb-8">
                 <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
                 <div>
                     <h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2>
-                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline">LinkedIn Profile</a>
+                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">
+                        LinkedIn Profile
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
                 </div>
             </div>
             <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
-                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
-                <!-- Other main links would go here -->
-            </nav>
-        </aside>
-
-        <main class="w-full p-4 md:p-8 lg:p-12">
-            <header class="mb-12">
-                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">The Resource Management Game</h1>
-                <p class="mt-4 text-lg text-stone-600 max-w-4xl">Your mission: Deploy your application. The challenge: The platform team has enforced quotas. Configure your pod's resources to pass the validation checks at every level of the resource control hierarchy.</p>
-            </header>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-                <!-- Left Panel: Status Dashboard -->
-                <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2">Live Quota Status</h2>
-                    <div class="space-y-4">
-                        <!-- Cluster Quota -->
-                        <div>
-                            <h3 class="font-semibold text-indigo-700">ClusterResourceQuota (Dept. X)</h3>
-                            <div class="text-sm space-y-2 mt-2">
-                                <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">CPU Requests</span><span id="cquota-cpu-text">0 / 0 Cores</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="cquota-cpu-bar" class="bg-indigo-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">Memory Requests</span><span id="cquota-mem-text">0 / 0 Gi</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="cquota-mem-bar" class="bg-indigo-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                            </div>
-                        </div>
-                         <!-- Namespace Quota -->
-                        <div class="pt-4 border-t">
-                            <h3 class="font-semibold text-purple-700">ResourceQuota (Your Namespace)</h3>
-                            <div class="text-sm space-y-2 mt-2">
-                                <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">CPU Requests</span><span id="nquota-cpu-req-text">0 / 0 Cores</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="nquota-cpu-req-bar" class="bg-purple-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">CPU Limits</span><span id="nquota-cpu-lim-text">0 / 0 Cores</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="nquota-cpu-lim-bar" class="bg-purple-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                                <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">Memory Requests</span><span id="nquota-mem-req-text">0 / 0 Gi</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="nquota-mem-req-bar" class="bg-purple-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                                 <div>
-                                    <div class="flex justify-between mb-1"><span class="font-medium">Memory Limits</span><span id="nquota-mem-lim-text">0 / 0 Gi</span></div>
-                                    <div class="progress-bar-bg w-full rounded-full h-2.5"><div id="nquota-mem-lim-bar" class="bg-purple-600 h-2.5 rounded-full progress-bar" style="width: 0%"></div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Center Panel: Deployment Console -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-bold mb-4 border-b pb-2">Deployment Console</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                         <!-- Deployment Config -->
-                        <div class="space-y-4">
-                             <div>
-                                <label for="cpu-request" class="block text-sm font-medium text-stone-700">CPU Request (millicores)</label>
-                                <input type="number" id="cpu-request" value="500" step="50" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
-                            </div>
-                             <div>
-                                <label for="cpu-limit" class="block text-sm font-medium text-stone-700">CPU Limit (millicores)</label>
-                                <input type="number" id="cpu-limit" value="1000" step="50" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
-                            </div>
-                             <div>
-                                <label for="mem-request" class="block text-sm font-medium text-stone-700">Memory Request (MiB)</label>
-                                <input type="number" id="mem-request" value="256" step="64" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
-                            </div>
-                             <div>
-                                <label for="mem-limit" class="block text-sm font-medium text-stone-700">Memory Limit (MiB)</label>
-                                <input type="number" id="mem-limit" value="512" step="64" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
-                            </div>
-                            <button id="deploy-btn" class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                                Deploy Workload
-                            </button>
-                        </div>
-                        <!-- Event Log -->
-                        <div>
-                            <h3 class="font-semibold text-center mb-2">Event Log</h3>
-                            <div id="event-log" class="bg-gray-900 text-white font-mono text-xs rounded-lg p-4 h-80 overflow-y-auto">
-                                <p class="text-gray-400">Waiting for deployment attempt...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VPA Modes Explained Section -->
-            <section id="vpa-modes-explained" class="mt-20">
-                <h2 class="text-3xl font-bold text-center mb-10">VPA Benchmarking Patterns Explained</h2>
-                <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto">
-                     <div class="mb-6 border-b border-stone-200">
-                        <nav class="flex space-x-2" id="vpa-mode-tabs">
-                            <button data-target="recommender" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Recommender</button>
-                            <button data-target="updater" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Updater</button>
-                            <button data-target="admission" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Admission</button>
-                        </nav>
-                    </div>
-                    <div id="vpa-mode-content">
-                        <!-- Content will be injected here by JS -->
-                    </div>
-                </div>
-            </section>
-
-             <!-- Interactive Hierarchy Section -->
-            <section id="resource-deep-dive" class="mt-20">
-                <h2 class="text-3xl font-bold text-center mb-10">Explore the Resource Control Hierarchy</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                    <!-- Diagram -->
-                    <div id="hierarchy-diagram" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-indigo-500 space-y-2">
-                        <div data-target="cluster" class="hierarchy-box p-4 border-2 border-indigo-400 rounded-lg">
-                            <h3 class="font-bold text-indigo-700">Cluster Level</h3>
-                            <p class="text-sm font-mono text-indigo-500">ClusterResourceQuota</p>
-                            <div data-target="node" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-cyan-400 rounded-lg bg-cyan-50">
-                                <h4 class="font-bold text-cyan-700">Node Level</h4>
-                                <p class="text-sm font-mono text-cyan-500">Capacity / Taints</p>
-                                <div data-target="namespace" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-purple-400 rounded-lg bg-purple-50">
-                                    <h5 class="font-bold text-purple-700">Namespace Level</h5>
-                                    <p class="text-sm font-mono text-purple-500">ResourceQuota</p>
-                                    <div data-target="limitrange" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-teal-400 rounded-lg bg-teal-50">
-                                        <h6 class="font-bold text-teal-700">Pod & Container Level</h6>
-                                        <p class="text-sm font-mono text-teal-500">LimitRange</p>
-                                        <div data-target="Requests & Limits" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-orange-400 rounded-lg bg-orange-50">
-                                            <h6 class="font-bold text-teal-700">Container Spec</h6>
-                                            <p class="text-sm font-mono text-teal-500">requests/limits</p>
-                                            <div class="flex gap-2 mt-2">
-                                                <div class="flex-1 text-center bg-white p-4 rounded shadow-inner">
-                                                    <p class="text-xs font-mono text-orange-600">cpu, memory, pv</p>
-                                                </div>
-                                                <div class="flex-1 text-center bg-white p-4 rounded shadow-inner">
-                                                     <p class="text-xs font-mono text-orange-600">cpu, memory, pv</p>
-                                                </div>
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Hobbies</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Travel Blog</a>
+                <div>
+                    <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h3 class="font-semibold text-stone-700">Technical Blogs</h3><span class="arrow transform transition-transform duration-200">▼</span></div>
+                    <div id="links-tech-blogs" class="mt-1 ml-2 space-y-2 hidden">
+                        <div class="nav-subcategory">
+                            <div id="nav-resiliency-main" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h4 class="font-semibold text-stone-600 text-sm">Resiliency</h4><span class="arrow transform transition-transform duration-200">▼</span></div>
+                            <div id="links-resiliency-main" class="mt-1 ml-2 space-y-2 hidden">
+                                <div class="nav-subcategory">
+                                    <div id="nav-workload-resiliency" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h5 class="font-semibold text-stone-500 text-sm">Workload Resiliency</h5><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                    <div id="links-workload-resiliency" class="mt-1 ml-2 space-y-1 hidden">
+                                        <div class="nav-subcategory">
+                                             <div id="nav-core-resilience" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Core Resilience</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-core-resilience" class="mt-1 ml-2 space-y-1 hidden"><a href="fault-tolerance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Tolerance</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-scaling" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Scaling & Availability</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-scaling" class="mt-1 ml-2 space-y-1 hidden"><a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Single Cluster Scaling</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-traffic" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Traffic Deployment</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-traffic" class="mt-1 ml-2 space-y-1 hidden"><a href="service-discovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Service Discovery</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-validation" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Validation & Benchmarking</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-validation" class="mt-1 ml-2 space-y-1 hidden"><a href="workload-benchmarking.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Workload Benchmarking</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-labs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Interactive Labs</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-labs" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="hpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">HPA Simulation</a>
+                                                <a href="vpa.html" class="nav-link active-page block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">VPA Simulation</a>
+                                                <a href="limits-quota.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
                                             </div>
                                         </div>
                                     </div>
@@ -186,108 +95,180 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Detailed Explanations -->
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <div id="content-cluster" class="tab-content"><h2 class="text-2xl font-bold text-indigo-800 mb-4">ClusterResourceQuota</h2><p class="text-stone-600 mb-4">This OpenShift-specific object manages resource usage across **multiple namespaces**. It sets an aggregate quota for a group of namespaces (e.g., a whole department), preventing one team from consuming an unfair share of cluster resources.</p></div>
-                        <div id="content-node" class="tab-content"><h2 class="text-2xl font-bold text-cyan-800 mb-4">Node Level Control</h2><p class="text-stone-600 mb-4">At this level, control is about the total capacity of the node itself (its physical CPU and Memory) and the `allocatable` resources available for pods. Platform administrators can also use **Taints and Tolerations** to dedicate nodes to specific types of workloads (e.g., GPU-enabled nodes), ensuring that only pods with the correct `toleration` can be scheduled there. This acts as a powerful isolation mechanism.</p></div>
-                        <div id="content-namespace" class="tab-content"><h2 class="text-2xl font-bold text-purple-800 mb-4">ResourceQuota</h2><p class="text-stone-600 mb-4">A standard Kubernetes object providing constraints on a **single namespace**. It limits the total amount of resources (CPU, memory) and number of objects (pods, services) that can exist within that namespace.</p></div>
-                        <div id="content-limitrange" class="tab-content"><h2 class="text-2xl font-bold text-teal-800 mb-4">LimitRange</h2><p class="text-stone-600 mb-4">This object operates within a namespace and defines constraints on **individual pods or containers**. It's used to set default request/limit values, and enforce minimum/maximum resource values per container.</p></div>
-                        <div id="content-requests" class="tab-content"><h2 class="text-2xl font-bold text-orange-800 mb-4">Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p></div>
-                    </div>
                 </div>
-            </section>
+            </nav>
+        </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-16">
+                <h1 class="text-4xl md:text-5xl font-bold text-indigo-900">Interactive VPA & Benchmarking</h1>
+                <p class="mt-4 text-lg text-stone-600 max-w-4xl">Experiment with the Vertical Pod Autoscaler and explore the hierarchy of resource controls to understand how Kubernetes manages workload benchmarking and resource allocation.</p>
+            </header>
+            <div class="space-y-20">
+                <!-- Interactive VPA Simulation -->
+                <section id="vpa-simulation">
+                    <h2 class="text-3xl font-bold text-center mb-10">Interactive VPA Simulation</h2>
+                    <p class="text-center text-stone-600 max-w-2xl mx-auto mb-10">Play with the Vertical Pod Autoscaler to see how it works. Select a mode and watch how the VPA observes a running pod and makes recommendations. In "Auto" mode, you can trigger the update yourself!</p>
+                    <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+                        <div class="mb-6 pb-4 border-b border-stone-200">
+                            <h3 class="text-lg font-semibold text-center mb-4">VPA Control Panel</h3>
+                            <div id="vpa-controls" class="flex justify-center items-center gap-2 bg-stone-100 p-2 rounded-lg">
+                                <button data-mode="Off" class="control-btn px-4 py-2 text-sm font-semibold text-stone-700 rounded-md hover:bg-stone-200">Mode: Off</button>
+                                <button data-mode="Recommender" class="control-btn px-4 py-2 text-sm font-semibold text-stone-700 rounded-md hover:bg-stone-200">Mode: Recommender</button>
+                                <button data-mode="Auto" class="control-btn px-4 py-2 text-sm font-semibold text-stone-700 rounded-md hover:bg-stone-200">Mode: Auto (Update)</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                            <div id="pod-panel" class="p-4 bg-gray-50 rounded-lg border-2 border-gray-200"><h4 class="font-bold text-gray-800 mb-2">Pod Status</h4><div class="space-y-2 text-sm"><p><strong>CPU Request:</strong> <span id="pod-cpu" class="font-mono bg-gray-200 px-2 py-1 rounded">250m</span></p><p><strong>Memory Request:</strong> <span id="pod-mem" class="font-mono bg-gray-200 px-2 py-1 rounded">256Mi</span></p><p id="pod-status-text" class="text-xs text-gray-500 mt-2 h-4"></p></div></div>
+                            <div id="workload-panel" class="p-4 bg-gray-50 rounded-lg border-2 border-gray-200"><h4 class="font-bold text-gray-800 mb-2">Live Workload Usage</h4><div class="space-y-2 text-sm"><p><strong>Actual CPU:</strong> <span id="actual-cpu" class="font-mono bg-blue-100 text-blue-800 px-2 py-1 rounded">--</span></p><p><strong>Actual Memory:</strong> <span id="actual-mem" class="font-mono bg-blue-100 text-blue-800 px-2 py-1 rounded">--</span></p></div></div>
+                            <div id="vpa-panel" class="p-4 bg-gray-50 rounded-lg border-2 border-gray-200"><h4 class="font-bold text-gray-800 mb-2">VPA Recommendations</h4><div class="space-y-2 text-sm"><p><strong>Rec. CPU:</strong> <span id="vpa-cpu" class="font-mono bg-green-100 text-green-800 px-2 py-1 rounded">--</span></p><p><strong>Rec. Memory:</strong> <span id="vpa-mem" class="font-mono bg-green-100 text-green-800 px-2 py-1 rounded">--</span></p><button id="update-btn" class="mt-2 w-full px-4 py-2 text-sm font-semibold text-white bg-indigo-500 rounded-md hover:bg-indigo-600 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Apply Update</button></div></div>
+                        </div>
+                         <div id="simulation-log" class="mt-6 text-sm text-center text-stone-600 h-6">Select a mode to start the simulation.</div>
+                    </div>
+                </section>
+                <section id="vpa-modes-explained" class="mt-20">
+                    <h2 class="text-3xl font-bold text-center mb-10">VPA Benchmarking Patterns Explained</h2>
+                    <div class="bg-white p-6 rounded-lg shadow-lg max-w-3xl mx-auto">
+                         <div class="mb-6 border-b border-stone-200">
+                            <nav class="flex space-x-2" id="vpa-mode-tabs">
+                                <button data-target="recommender" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Recommender</button>
+                                <button data-target="updater" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Updater</button>
+                                <button data-target="admission" class="static-tab py-3 px-5 border-b-2 font-medium text-sm text-stone-500 hover:text-indigo-600 hover:border-indigo-300">Admission</button>
+                            </nav>
+                        </div>
+                        <div id="vpa-mode-content"></div>
+                    </div>
+                </section>
+                <section id="resource-deep-dive" class="mt-20">
+                    <h2 class="text-3xl font-bold text-center mb-10">Explore the Resource Control Hierarchy</h2>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        <div id="hierarchy-diagram" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-indigo-500 space-y-2">
+                            <div data-target="cluster" class="hierarchy-box p-4 border-2 border-indigo-400 rounded-lg"><h3 class="font-bold text-indigo-700">Cluster Level</h3><p class="text-sm font-mono text-indigo-500">ClusterResourceQuota</p><div data-target="node" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-cyan-400 rounded-lg bg-cyan-50"><h4 class="font-bold text-cyan-700">Node Level</h4><p class="text-sm font-mono text-cyan-500">Capacity / Taints</p><div data-target="namespace" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-purple-400 rounded-lg bg-purple-50"><h5 class="font-bold text-purple-700">Namespace Level</h5><p class="text-sm font-mono text-purple-500">ResourceQuota</p><div data-target="limitrange" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-teal-400 rounded-lg bg-teal-50"><h6 class="font-bold text-teal-700">Pod & Container Level</h6><p class="text-sm font-mono text-teal-500">LimitRange</p><div data-target="requests" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-orange-400 rounded-lg bg-orange-50"><h6 class="font-bold text-orange-700">Container Spec</h6><p class="text-sm font-mono text-orange-500">requests/limits</p><div class="flex gap-2 mt-2"><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div></div></div></div></div></div></div></div>
+                        </div>
+                        <div class="bg-white p-8 rounded-lg shadow-lg">
+                            <div id="content-cluster" class="tab-content"></div><div id="content-node" class="tab-content"></div><div id="content-namespace" class="tab-content"></div><div id="content-limitrange" class="tab-content"></div><div id="content-requests" class="tab-content"></div>
+                        </div>
+                    </div>
+                </section>
+                <section id="scheduling-flow" class="mt-20">
+                    <h2 class="text-3xl font-bold text-center mb-10">Interactive Pod Scheduling & VPA Flow</h2>
+                    <p class="text-center text-stone-600 max-w-2xl mx-auto mb-10">Hover over the steps to see how a pod moves from pending to running and how VPA provides recommendations based on the simulation above.</p>
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="flow-step bg-white p-4 rounded-lg shadow-md w-72 text-center"><h3 class="font-semibold">1. Pod Creation</h3><p class="text-sm text-stone-500">A new pod is submitted with initial requests.</p></div>
+                        <div class="text-3xl text-stone-400">↓</div>
+                        <div class="flow-step bg-white p-4 rounded-lg shadow-md w-72 text-center border-l-4 border-yellow-500"><h3 class="font-semibold">2. Scheduler Check</h3><p class="text-sm text-stone-500">Checks if any node has enough resources to satisfy the pod's `requests`.</p></div>
+                        <div class="flex items-center justify-center space-x-8 w-full">
+                             <div class="flex flex-col items-center text-center"><div class="text-3xl text-red-400">↘</div><div class="flow-step bg-red-100 p-4 rounded-lg shadow-md w-60 mt-2"><h4 class="font-semibold text-red-700">No → Pending</h4><p class="text-sm text-stone-500">Pod remains `Pending` until resources are available.</p></div></div>
+                            <div class="flex flex-col items-center text-center"><div class="text-3xl text-green-400">↙</div><div class="flow-step bg-green-100 p-4 rounded-lg shadow-md w-60 mt-2"><h4 class="font-semibold text-green-700">Yes → Scheduled</h4><p class="text-sm text-stone-500">Pod is assigned to a node and starts running.</p></div></div>
+                        </div>
+                         <div class="text-3xl text-stone-400">↓</div>
+                         <div class="flow-step bg-blue-100 p-4 rounded-lg shadow-md w-72 text-center border-l-4 border-blue-500"><h3 class="font-semibold text-blue-700">3. VPA Monitors Usage</h3><p class="text-sm text-stone-500">If VPA is active, it observes the pod's actual CPU and Memory usage over time.</p></div>
+                         <div class="text-3xl text-stone-400">↓</div>
+                         <div class="flow-step bg-indigo-100 p-4 rounded-lg shadow-md w-72 text-center"><h3 class="font-semibold text-indigo-700">4. VPA Provides Recommendations</h3><p class="text-sm text-stone-500">Updates the VPA object with recommended `requests` values for optimal performance.</p></div>
+                    </div>
+                </section>
+            </div>
         </main>
     </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // --- GAME LOGIC ---
-    const gameState = {
-        clusterQuota: { cpu: 40000, mem: 81920 },
-        clusterUsage: { cpu: 32000, mem: 61440 },
-        namespaceQuota: { reqCpu: 10000, limCpu: 20000, reqMem: 20480, limMem: 40960 },
-        namespaceUsage: { reqCpu: 8000, limCpu: 15000, reqMem: 16384, limMem: 30720 },
-        limitRange: { maxCpu: 2000, maxMem: 2048 },
+    // --- VPA GAME LOGIC ---
+    const vpaGameState = {
+        mode: 'Off', podCpuRequest: 250, podMemRequest: 256,
+        actualCpu: 0, actualMem: 0, recCpu: 0, recMem: 0,
+        workloadInterval: null, recommenderInterval: null,
     };
+    const podCpuEl = document.getElementById('pod-cpu');
+    const podMemEl = document.getElementById('pod-mem');
+    const actualCpuEl = document.getElementById('actual-cpu');
+    const actualMemEl = document.getElementById('actual-mem');
+    const vpaCpuEl = document.getElementById('vpa-cpu');
+    const vpaMemEl = document.getElementById('vpa-mem');
+    const updateBtn = document.getElementById('update-btn');
+    const podPanel = document.getElementById('pod-panel');
+    const workloadPanel = document.getElementById('workload-panel');
+    const vpaControls = document.getElementById('vpa-controls');
+    const simLogEl = document.getElementById('simulation-log');
+    const podStatusTextEl = document.getElementById('pod-status-text');
 
-    const gameLogEl = document.getElementById('event-log');
-
-    function gameLog(message, success = null) {
-        const p = document.createElement('p');
-        let colorClass = 'text-gray-300';
-        let prefix = 'INFO';
-        if (success === true) { colorClass = 'text-green-400'; prefix = 'PASS'; } 
-        else if (success === false) { colorClass = 'text-red-400'; prefix = 'FAIL'; }
-        p.className = `py-1 ${colorClass}`;
-        p.innerHTML = `<span class="font-bold">[${prefix}]</span> ${message}`;
-        gameLogEl.appendChild(p);
-        gameLogEl.scrollTop = gameLogEl.scrollHeight;
+    function updateVpaSimUI() {
+        podCpuEl.textContent = `${vpaGameState.podCpuRequest}m`; podMemEl.textContent = `${vpaGameState.podMemRequest}Mi`;
+        actualCpuEl.textContent = `${vpaGameState.actualCpu}m`; actualMemEl.textContent = `${vpaGameState.actualMem}Mi`;
+        if (vpaGameState.mode === 'Off') {
+            vpaCpuEl.textContent = 'N/A'; vpaMemEl.textContent = 'N/A';
+            vpaCpuEl.parentElement.classList.add('opacity-50'); vpaMemEl.parentElement.classList.add('opacity-50');
+            updateBtn.disabled = true;
+        } else {
+             vpaCpuEl.parentElement.classList.remove('opacity-50'); vpaMemEl.parentElement.classList.remove('opacity-50');
+             vpaCpuEl.textContent = vpaGameState.recCpu > 0 ? `${vpaGameState.recCpu}m` : '--';
+             vpaMemEl.textContent = vpaGameState.recMem > 0 ? `${vpaGameState.recMem}Mi` : '--';
+        }
+        updateBtn.disabled = !(vpaGameState.mode === 'Auto' && vpaGameState.recCpu > 0);
     }
-
-    function updateGameUI() {
-        document.getElementById('cquota-cpu-text').textContent = `${gameState.clusterUsage.cpu / 1000} / ${gameState.clusterQuota.cpu / 1000} Cores`;
-        document.getElementById('cquota-cpu-bar').style.width = `${(gameState.clusterUsage.cpu / gameState.clusterQuota.cpu) * 100}%`;
-        document.getElementById('cquota-mem-text').textContent = `${(gameState.clusterUsage.mem / 1024).toFixed(1)} / ${(gameState.clusterQuota.mem / 1024).toFixed(1)} Gi`;
-        document.getElementById('cquota-mem-bar').style.width = `${(gameState.clusterUsage.mem / gameState.clusterQuota.mem) * 100}%`;
-        document.getElementById('nquota-cpu-req-text').textContent = `${gameState.namespaceUsage.reqCpu / 1000} / ${gameState.namespaceQuota.reqCpu / 1000} Cores`;
-        document.getElementById('nquota-cpu-req-bar').style.width = `${(gameState.namespaceUsage.reqCpu / gameState.namespaceQuota.reqCpu) * 100}%`;
-        document.getElementById('nquota-cpu-lim-text').textContent = `${gameState.namespaceUsage.limCpu / 1000} / ${gameState.namespaceQuota.limCpu / 1000} Cores`;
-        document.getElementById('nquota-cpu-lim-bar').style.width = `${(gameState.namespaceUsage.limCpu / gameState.namespaceQuota.limCpu) * 100}%`;
-        document.getElementById('nquota-mem-req-text').textContent = `${(gameState.namespaceUsage.reqMem / 1024).toFixed(1)} / ${(gameState.namespaceQuota.reqMem / 1024).toFixed(1)} Gi`;
-        document.getElementById('nquota-mem-req-bar').style.width = `${(gameState.namespaceUsage.reqMem / gameState.namespaceQuota.reqMem) * 100}%`;
-        document.getElementById('nquota-mem-lim-text').textContent = `${(gameState.namespaceUsage.limMem / 1024).toFixed(1)} / ${(gameState.namespaceQuota.limMem / 1024).toFixed(1)} Gi`;
-        document.getElementById('nquota-mem-lim-bar').style.width = `${(gameState.namespaceUsage.limMem / gameState.namespaceQuota.limMem) * 100}%`;
+    function setSimLog(message) { simLogEl.textContent = message; }
+    function simulateWorkload() {
+        if (vpaGameState.workloadInterval) clearInterval(vpaGameState.workloadInterval);
+        vpaGameState.workloadInterval = setInterval(() => {
+            vpaGameState.actualCpu = 550 + Math.floor(Math.random() * 100);
+            vpaGameState.actualMem = 650 + Math.floor(Math.random() * 100);
+            workloadPanel.classList.add('workload-running');
+            setTimeout(() => workloadPanel.classList.remove('workload-running'), 1000);
+            updateVpaSimUI();
+        }, 2000);
     }
-
-    document.getElementById('deploy-btn').addEventListener('click', () => {
-        gameLogEl.innerHTML = ''; gameLog('Deployment initiated...');
-        const reqCpu = parseInt(document.getElementById('cpu-request').value);
-        const limCpu = parseInt(document.getElementById('cpu-limit').value);
-        const reqMem = parseInt(document.getElementById('mem-request').value);
-        const limMem = parseInt(document.getElementById('mem-limit').value);
-
-        gameLog('1. Checking against LimitRange...');
-        if (limCpu > gameState.limitRange.maxCpu) { gameLog(`CPU limit (${limCpu}m) exceeds max per container (${gameState.limitRange.maxCpu}m).`, false); return; }
-        if (limMem > gameState.limitRange.maxMem) { gameLog(`Memory limit (${limMem}Mi) exceeds max per container (${gameState.limitRange.maxMem}Mi).`, false); return; }
-        gameLog('LimitRange check passed.', true);
-        
-        gameLog('2. Checking namespace ResourceQuota...');
-        if (gameState.namespaceUsage.reqCpu + reqCpu > gameState.namespaceQuota.reqCpu) { gameLog(`Exceeds namespace CPU request quota.`, false); return; }
-        if (gameState.namespaceUsage.limCpu + limCpu > gameState.namespaceQuota.limCpu) { gameLog(`Exceeds namespace CPU limit quota.`, false); return; }
-        if (gameState.namespaceUsage.reqMem + reqMem > gameState.namespaceQuota.reqMem) { gameLog(`Exceeds namespace Memory request quota.`, false); return; }
-        if (gameState.namespaceUsage.limMem + limMem > gameState.namespaceQuota.limMem) { gameLog(`Exceeds namespace Memory limit quota.`, false); return; }
-        gameLog('Namespace ResourceQuota check passed.', true);
-
-        gameLog('3. Checking ClusterResourceQuota...');
-        if (gameState.clusterUsage.cpu + reqCpu > gameState.clusterQuota.cpu) { gameLog(`Exceeds cluster CPU request quota for department.`, false); return; }
-        if (gameState.clusterUsage.mem + reqMem > gameState.clusterQuota.mem) { gameLog(`Exceeds cluster Memory request quota for department.`, false); return; }
-        gameLog('ClusterResourceQuota check passed.', true);
-
-        gameLog('All resource control checks passed. Deploying pod!', true);
-        gameState.namespaceUsage.reqCpu += reqCpu; gameState.namespaceUsage.limCpu += limCpu;
-        gameState.namespaceUsage.reqMem += reqMem; gameState.namespaceUsage.limMem += limMem;
-        gameState.clusterUsage.cpu += reqCpu; gameState.clusterUsage.mem += reqMem;
-        updateGameUI();
+    function stopWorkload() {
+        if (vpaGameState.workloadInterval) clearInterval(vpaGameState.workloadInterval);
+        vpaGameState.workloadInterval = null; workloadPanel.classList.remove('workload-running');
+        vpaGameState.actualCpu = 0; vpaGameState.actualMem = 0;
+    }
+    function startRecommender() {
+        if (vpaGameState.recommenderInterval) clearInterval(vpaGameState.recommenderInterval);
+        setSimLog('VPA Recommender is observing the workload...');
+        vpaGameState.recommenderInterval = setInterval(() => {
+            if (vpaGameState.actualCpu > 0) {
+                vpaGameState.recCpu = Math.ceil((vpaGameState.actualCpu * 1.1) / 50) * 50;
+                vpaGameState.recMem = Math.ceil((vpaGameState.actualMem * 1.1) / 64) * 64;
+                setSimLog('VPA has new recommendations!');
+                updateVpaSimUI();
+            }
+        }, 5000);
+    }
+    function stopRecommender() {
+        if (vpaGameState.recommenderInterval) clearInterval(vpaGameState.recommenderInterval);
+        vpaGameState.recommenderInterval = null; vpaGameState.recCpu = 0; vpaGameState.recMem = 0;
+    }
+    function applyUpdate() {
+        if (vpaGameState.mode !== 'Auto' || vpaGameState.recCpu === 0) return;
+        stopWorkload(); stopRecommender();
+        setSimLog('Applying update... Pod is restarting with new resource requests.');
+        podPanel.classList.add('pod-restarting'); podStatusTextEl.textContent = 'Restarting...';
+        setTimeout(() => {
+            podPanel.classList.remove('pod-restarting');
+            vpaGameState.podCpuRequest = vpaGameState.recCpu; vpaGameState.podMemRequest = vpaGameState.recMem;
+            vpaGameState.recCpu = 0; vpaGameState.recMem = 0;
+            podStatusTextEl.textContent = ''; setSimLog('Pod updated successfully. Resuming simulation.');
+            updateVpaSimUI();
+            setTimeout(() => { simulateWorkload(); startRecommender(); }, 1000);
+        }, 1000);
+    }
+    vpaControls.addEventListener('click', (e) => {
+        if (e.target.tagName !== 'BUTTON') return;
+        const newMode = e.target.dataset.mode;
+        if (newMode === vpaGameState.mode) return;
+        vpaControls.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active'); vpaGameState.mode = newMode;
+        stopWorkload(); stopRecommender();
+        switch (vpaGameState.mode) {
+            case 'Off': setSimLog('VPA is off. Pod is running with its initial requests.'); break;
+            case 'Recommender': setSimLog('VPA set to Recommender mode.'); simulateWorkload(); startRecommender(); break;
+            case 'Auto': setSimLog('VPA set to Auto mode. Recommendations will be generated.'); simulateWorkload(); startRecommender(); break;
+        }
+        updateVpaSimUI();
     });
-    
-    // --- HIERARCHY DIAGRAM LOGIC ---
-    const hierarchyDiagram = document.getElementById('hierarchy-diagram');
-    const allBoxes = hierarchyDiagram.querySelectorAll('.hierarchy-box');
-    const allContent = document.querySelectorAll('.tab-content');
-
-    function setActive(target) {
-        allBoxes.forEach(box => box.classList.remove('active'));
-        allContent.forEach(content => content.classList.remove('active'));
-        const targetBox = hierarchyDiagram.querySelector(`[data-target="${target}"]`);
-        const targetContent = document.getElementById(`content-${target}`);
-        if (targetBox) targetBox.classList.add('active');
-        if (targetContent) targetContent.classList.add('active');
-    }
-
-    hierarchyDiagram.addEventListener('click', (e) => {
-        const targetBox = e.target.closest('.hierarchy-box');
-        if (targetBox) setActive(targetBox.dataset.target);
-    });
+    updateBtn.addEventListener('click', applyUpdate);
+    vpaControls.querySelector('[data-mode="Off"]').classList.add('active');
+    updateVpaSimUI();
 
     // --- VPA STATIC TABS LOGIC ---
     const vpaModeData = {
@@ -297,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     const vpaTabsContainer = document.getElementById('vpa-mode-tabs');
     const vpaContentContainer = document.getElementById('vpa-mode-content');
-    
     function updateVpaContent(modeName) {
         if (!vpaContentContainer || !vpaModeData[modeName]) return;
         const data = vpaModeData[modeName];
@@ -307,17 +287,45 @@ document.addEventListener('DOMContentLoaded', function () {
             if (t.dataset.target === modeName) t.classList.add('active');
         });
     }
-
     if(vpaTabsContainer) {
         vpaTabsContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('static-tab')) updateVpaContent(e.target.dataset.target);
         });
-        updateVpaContent('recommender'); // Set initial state
+        updateVpaContent('recommender');
     }
-    
-    // Initial UI state for both game and hierarchy
-    updateGameUI();
+
+    // --- HIERARCHY DIAGRAM LOGIC ---
+    const hierarchyDiagram = document.getElementById('hierarchy-diagram');
+    const allBoxes = hierarchyDiagram.querySelectorAll('.hierarchy-box');
+    const allContent = document.querySelectorAll('#resource-deep-dive .tab-content');
+    const contentData = {
+        cluster: `<h2 class="text-2xl font-bold text-indigo-800 mb-4">ClusterResourceQuota</h2><p class="text-stone-600 mb-4">This OpenShift-specific object manages resource usage across **multiple namespaces**. It sets an aggregate quota for a group of namespaces (e.g., a whole department), preventing one team from consuming an unfair share of cluster resources.</p>`,
+        node: `<h2 class="text-2xl font-bold text-cyan-800 mb-4">Node Level Control</h2><p class="text-stone-600 mb-4">At this level, control is about the total capacity of the node itself and its \`allocatable\` resources. Administrators use **Taints and Tolerations** to dedicate nodes to specific workloads (e.g., GPU-enabled nodes), ensuring only matching pods can be scheduled there.</p>`,
+        namespace: `<h2 class="text-2xl font-bold text-purple-800 mb-4">ResourceQuota</h2><p class="text-stone-600 mb-4">A standard Kubernetes object providing constraints on a **single namespace**. It limits the total amount of resources (CPU, memory) and number of objects (pods, services) that can exist within that namespace.</p>`,
+        limitrange: `<h2 class="text-2xl font-bold text-teal-800 mb-4">LimitRange</h2><p class="text-stone-600 mb-4">This object operates within a namespace and defines constraints on **individual pods or containers**. It's used to set default request/limit values and enforce min/max resource values per container.</p>`,
+        requests: `<h2 class="text-2xl font-bold text-orange-800 mb-4">Container Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p>`
+    };
+    function setActive(target) {
+        allBoxes.forEach(box => box.classList.remove('active'));
+        allContent.forEach(content => { content.classList.remove('active'); content.innerHTML = ''; });
+        const targetBox = hierarchyDiagram.querySelector(`[data-target="${target}"]`);
+        // Find the right container for content. There's only one, outside the diagram.
+        const explanationContainer = document.querySelector("#resource-deep-dive .bg-white.p-8");
+        if (targetBox) targetBox.classList.add('active');
+        if (explanationContainer && contentData[target]) {
+             explanationContainer.innerHTML = `<div class="tab-content active">${contentData[target]}</div>`;
+        }
+    }
+    hierarchyDiagram.addEventListener('click', (e) => {
+        const targetBox = e.target.closest('.hierarchy-box');
+        if (targetBox) setActive(targetBox.dataset.target);
+    });
     setActive('cluster');
+
+    // --- MASTER NAVIGATION SCRIPT ---
+    function setupCollapsibleNav(headerId, linksId) { const header = document.getElementById(headerId); if (!header) return; const links = document.getElementById(linksId); if (!links) return; const arrow = header.querySelector('.arrow'); if (!arrow) return; header.addEventListener('click', (e) => { e.stopPropagation(); links.classList.toggle('hidden'); arrow.classList.toggle('rotate-180'); }); }
+    setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs'); setupCollapsibleNav('nav-resiliency-main', 'links-resiliency-main'); setupCollapsibleNav('nav-workload-resiliency', 'links-workload-resiliency'); setupCollapsibleNav('nav-core-resilience', 'links-core-resilience'); setupCollapsibleNav('nav-scaling', 'links-scaling'); setupCollapsibleNav('nav-traffic', 'links-traffic'); setupCollapsibleNav('nav-validation', 'links-validation'); setupCollapsibleNav('nav-labs', 'links-labs');
+    const activeLink = document.querySelector('.nav-link.active-page'); if (activeLink) { let current = activeLink; while (current && current.id !== 'main-nav') { if (current.id && current.id.startsWith('links-')) { current.classList.remove('hidden'); const header = current.previousElementSibling; if (header && header.classList.contains('nav-category-header')) { const arrow = header.querySelector('.arrow'); if (arrow) arrow.classList.add('rotate-180'); } } current = current.parentElement; } }
 });
 </script>
 </body>
