@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        .nav-link.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .nav-category-header { cursor: pointer; }
+        .arrow.rotate-180 { transform: rotate(180deg); }
         .progress-bar-bg { background-color: #e9ecef; }
         .progress-bar { transition: width 0.5s ease-in-out; }
         .hierarchy-box { 
@@ -32,16 +35,59 @@
 <body class="bg-stone-50 text-stone-800">
     <div class="flex">
         <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <!-- Master Navigation Start -->
             <div class="flex items-center gap-4 mb-8">
                 <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
                 <div>
                     <h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2>
-                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline">LinkedIn Profile</a>
+                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">LinkedIn Profile <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
                 </div>
             </div>
             <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
-                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100">About Me</a>
-                </nav>
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Hobbies</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Travel Blog</a>
+                <div>
+                    <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h3 class="font-semibold text-stone-700">Technical Blogs</h3><span class="arrow transform transition-transform duration-200">▼</span></div>
+                    <div id="links-tech-blogs" class="mt-1 ml-2 space-y-2 hidden">
+                        <div class="nav-subcategory">
+                            <div id="nav-resiliency-main" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h4 class="font-semibold text-stone-600 text-sm">Resiliency</h4><span class="arrow transform transition-transform duration-200">▼</span></div>
+                            <div id="links-resiliency-main" class="mt-1 ml-2 space-y-2 hidden">
+                                <div class="nav-subcategory">
+                                    <div id="nav-workload-resiliency" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h5 class="font-semibold text-stone-500 text-sm">Workload Resiliency</h5><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                    <div id="links-workload-resiliency" class="mt-1 ml-2 space-y-1 hidden">
+                                        <div class="nav-subcategory">
+                                             <div id="nav-core-resilience" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Core Resilience</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-core-resilience" class="mt-1 ml-2 space-y-1 hidden"><a href="fault-tolerance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Tolerance</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-scaling" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Scaling & Availability</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-scaling" class="mt-1 ml-2 space-y-1 hidden"><a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Single Cluster Scaling</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-traffic" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Traffic Deployment</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-traffic" class="mt-1 ml-2 space-y-1 hidden"><a href="service-discovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Service Discovery</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-validation" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Validation & Benchmarking</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-validation" class="mt-1 ml-2 space-y-1 hidden"><a href="workload-benchmarking.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Workload Benchmarking</a></div>
+                                        </div>
+                                        <div class="nav-subcategory">
+                                             <div id="nav-labs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h6 class="font-semibold text-stone-500 text-xs">Interactive Labs</h6><span class="arrow transform transition-transform duration-200">▼</span></div>
+                                            <div id="links-labs" class="mt-1 ml-2 space-y-1 hidden">
+                                                <a href="hpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">HPA Simulation</a>
+                                                <a href="vpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">VPA Simulation</a>
+                                                <a href="limits-quota.html" class="nav-link active-page block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Master Navigation End -->
         </aside>
 
         <main class="w-full p-4 md:p-8 lg:p-12">
@@ -51,9 +97,11 @@
             </header>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Left Panel: Status Dashboard -->
                 <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-lg">
                     <h2 class="text-xl font-bold mb-4 border-b pb-2">Live Quota Status</h2>
                     <div class="space-y-4">
+                        <!-- Cluster Quota -->
                         <div>
                             <h3 class="font-semibold text-indigo-700">ClusterResourceQuota (Dept. X)</h3>
                             <div class="text-sm space-y-2 mt-2">
@@ -67,7 +115,8 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="pt-4 border-t">
+                         <!-- Namespace Quota -->
+                        <div class="pt-4 border-t">
                             <h3 class="font-semibold text-purple-700">ResourceQuota (Your Namespace)</h3>
                             <div class="text-sm space-y-2 mt-2">
                                 <div>
@@ -91,10 +140,12 @@
                     </div>
                 </div>
 
+                <!-- Center Panel: Deployment Console -->
                 <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-lg">
                     <h2 class="text-xl font-bold mb-4 border-b pb-2">Deployment Console</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                         <div class="space-y-4">
+                         <!-- Deployment Config -->
+                        <div class="space-y-4">
                              <div>
                                 <label for="cpu-request" class="block text-sm font-medium text-stone-700">CPU Request (millicores)</label>
                                 <input type="number" id="cpu-request" value="500" step="50" class="mt-1 block w-full p-2 border border-stone-300 rounded-md">
@@ -115,6 +166,7 @@
                                 Deploy Workload
                             </button>
                         </div>
+                        <!-- Event Log -->
                         <div>
                             <h3 class="font-semibold text-center mb-2">Event Log</h3>
                             <div id="event-log" class="bg-gray-900 text-white font-mono text-xs rounded-lg p-4 h-80 overflow-y-auto">
@@ -125,55 +177,24 @@
                 </div>
             </div>
 
+            <!-- Interactive Hierarchy Section -->
             <section id="resource-deep-dive" class="mt-20">
                 <h2 class="text-3xl font-bold text-center mb-10">Explore the Resource Control Hierarchy</h2>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     <div id="hierarchy-diagram" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-indigo-500 space-y-2">
-                        <div data-target="cluster" class="hierarchy-box p-4 border-2 border-indigo-400 rounded-lg">
-                            <h3 class="font-bold text-indigo-700">Cluster Level</h3>
-                            <p class="text-sm font-mono text-indigo-500">ClusterResourceQuota</p>
-                            <div data-target="node" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-cyan-400 rounded-lg bg-cyan-50">
-                                <h4 class="font-bold text-cyan-700">Node Level</h4>
-                                <p class="text-sm font-mono text-cyan-500">Capacity / Taints</p>
-                                <div data-target="namespace" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-purple-400 rounded-lg bg-purple-50">
-                                    <h5 class="font-bold text-purple-700">Namespace Level</h5>
-                                    <p class="text-sm font-mono text-purple-500">ResourceQuota</p>
-                                    <div data-target="limitrange" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-teal-400 rounded-lg bg-teal-50">
-                                        <h6 class="font-bold text-teal-700">Pod & Container Level</h6>
-                                        <p class="text-sm font-mono text-teal-500">LimitRange</p>
-                                        <div data-target="requests-limits" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-orange-400 rounded-lg bg-orange-50">
-                                            <h6 class="font-bold text-teal-700">Container Spec</h6>
-                                            <p class="text-sm font-mono text-teal-500">requests/limits</p>
-                                            <div class="flex gap-2 mt-2">
-                                                <div class="flex-1 text-center bg-white p-4 rounded shadow-inner">
-                                                    <p class="text-xs font-mono text-orange-600">cpu, memory, pv</p>
-                                                </div>
-                                                <div class="flex-1 text-center bg-white p-4 rounded shadow-inner">
-                                                     <p class="text-xs font-mono text-orange-600">cpu, memory, pv</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div data-target="cluster" class="hierarchy-box p-4 border-2 border-indigo-400 rounded-lg"><h3 class="font-bold text-indigo-700">Cluster Level</h3><p class="text-sm font-mono text-indigo-500">ClusterResourceQuota</p><div data-target="node" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-cyan-400 rounded-lg bg-cyan-50"><h4 class="font-bold text-cyan-700">Node Level</h4><p class="text-sm font-mono text-cyan-500">Capacity / Taints</p><div data-target="namespace" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-purple-400 rounded-lg bg-purple-50"><h5 class="font-bold text-purple-700">Namespace Level</h5><p class="text-sm font-mono text-purple-500">ResourceQuota</p><div data-target="limitrange" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-teal-400 rounded-lg bg-teal-50"><h6 class="font-bold text-teal-700">Pod & Container Level</h6><p class="text-sm font-mono text-teal-500">LimitRange</p><div data-target="requests" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-orange-400 rounded-lg bg-orange-50"><h6 class="font-bold text-orange-700">Container Spec</h6><p class="text-sm font-mono text-orange-500">requests/limits</p><div class="flex gap-2 mt-2"><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div></div></div></div></div></div></div></div>
                     </div>
                     <div class="bg-white p-8 rounded-lg shadow-lg">
-                        <div id="content-cluster" class="tab-content"><h2 class="text-2xl font-bold text-indigo-800 mb-4">ClusterResourceQuota</h2><p class="text-stone-600 mb-4">This OpenShift-specific object manages resource usage across **multiple namespaces**. It sets an aggregate quota for a group of namespaces (e.g., a whole department), preventing one team from consuming an unfair share of cluster resources.</p></div>
-                        <div id="content-node" class="tab-content"><h2 class="text-2xl font-bold text-cyan-800 mb-4">Node Level Control</h2><p class="text-stone-600 mb-4">At this level, control is about the total capacity of the node itself and its `allocatable` resources. Platform administrators can also use **Taints and Tolerations** to dedicate nodes to specific types of workloads (e.g., GPU-enabled nodes), ensuring that only pods with the correct `toleration` can be scheduled there. This acts as a powerful isolation mechanism.</p></div>
-                        <div id="content-namespace" class="tab-content"><h2 class="text-2xl font-bold text-purple-800 mb-4">ResourceQuota</h2><p class="text-stone-600 mb-4">A standard Kubernetes object providing constraints on a **single namespace**. It limits the total amount of resources (CPU, memory) and number of objects (pods, services) that can exist within that namespace.</p></div>
-                        <div id="content-limitrange" class="tab-content"><h2 class="text-2xl font-bold text-teal-800 mb-4">LimitRange</h2><p class="text-stone-600 mb-4">This object operates within a namespace and defines constraints on **individual pods or containers**. It's used to set default request/limit values, and enforce minimum/maximum resource values per container.</p></div>
-                        <div id="content-requests-limits" class="tab-content"><h2 class="text-2xl font-bold text-orange-800 mb-4">Container Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p></div>
+                        <div id="content-cluster" class="tab-content"></div><div id="content-node" class="tab-content"></div><div id="content-namespace" class="tab-content"></div><div id="content-limitrange" class="tab-content"></div><div id="content-requests" class="tab-content"></div>
                     </div>
                 </div>
             </section>
             
-             <section id="openshift-templates" class="mt-20">
-                <h2 class="text-3xl font-bold text-center mb-10">Resource Management as Code: OpenShift Templates</h2>
-                <p class="text-center text-stone-600 max-w-2xl mx-auto mb-10">As shown in the OpenShift workshop documentation, `Templates` are a powerful feature for bundling application components with their required resource control policies into a single, reusable blueprint.</p>
+            <!-- OpenShift Templates Section -->
+            <section class="mt-20">
                 <div class="bg-white p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
                     <h3 class="text-xl font-bold mb-4">Example Template with Embedded Quota</h3>
-                    <p class="text-stone-600 mb-4">This example shows how a `Template` can define a `ResourceQuota` object alongside the application's `DeploymentConfig`. When this template is processed, both the application and its specific resource constraints are created together, ensuring controls are applied automatically.</p>
+                    <p class="text-stone-600 mb-4">As shown in the OpenShift workshop documentation, `Templates` are a powerful feature for bundling application components with their required resource control policies. When this template is processed, both the application and its specific `ResourceQuota` are created together, ensuring controls are applied automatically.</p>
                     <pre class="bg-gray-900 text-white p-4 rounded-md text-xs overflow-x-auto"><code>apiVersion: v1
 kind: Template
 metadata:
@@ -219,8 +240,7 @@ parameters:
 document.addEventListener('DOMContentLoaded', function () {
     // --- GAME LOGIC ---
     const gameState = {
-        clusterQuota: { cpu: 40000, mem: 81920 },
-        clusterUsage: { cpu: 32000, mem: 61440 },
+        clusterQuota: { cpu: 40000, mem: 81920 }, clusterUsage: { cpu: 32000, mem: 61440 },
         namespaceQuota: { reqCpu: 10000, limCpu: 20000, reqMem: 20480, limMem: 40960 },
         namespaceUsage: { reqCpu: 8000, limCpu: 15000, reqMem: 16384, limMem: 30720 },
         limitRange: { maxCpu: 2000, maxMem: 2048 },
@@ -277,20 +297,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- HIERARCHY DIAGRAM LOGIC ---
     const hierarchyDiagram = document.getElementById('hierarchy-diagram');
     const allBoxes = hierarchyDiagram.querySelectorAll('.hierarchy-box');
-    const allContent = document.querySelectorAll('.tab-content');
+    const allContent = document.querySelectorAll('#resource-deep-dive .tab-content');
+    const contentData = {
+        cluster: `<h2 class="text-2xl font-bold text-indigo-800 mb-4">ClusterResourceQuota</h2><p class="text-stone-600 mb-4">This OpenShift-specific object manages resource usage across **multiple namespaces**. It sets an aggregate quota for a group of namespaces (e.g., a whole department), preventing one team from consuming an unfair share of cluster resources.</p>`,
+        node: `<h2 class="text-2xl font-bold text-cyan-800 mb-4">Node Level Control</h2><p class="text-stone-600 mb-4">At this level, control is about the total capacity of the node itself and its \`allocatable\` resources. Administrators use **Taints and Tolerations** to dedicate nodes to specific workloads (e.g., GPU-enabled nodes), ensuring only matching pods can be scheduled there.</p>`,
+        namespace: `<h2 class="text-2xl font-bold text-purple-800 mb-4">ResourceQuota</h2><p class="text-stone-600 mb-4">A standard Kubernetes object providing constraints on a **single namespace**. It limits the total amount of resources (CPU, memory) and number of objects (pods, services) that can exist within that namespace.</p>`,
+        limitrange: `<h2 class="text-2xl font-bold text-teal-800 mb-4">LimitRange</h2><p class="text-stone-600 mb-4">This object operates within a namespace and defines constraints on **individual pods or containers**. It's used to set default request/limit values and enforce min/max resource values per container.</p>`,
+        requests: `<h2 class="text-2xl font-bold text-orange-800 mb-4">Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p>`
+    };
     function setActive(target) {
         allBoxes.forEach(box => box.classList.remove('active'));
-        allContent.forEach(content => content.classList.remove('active'));
+        allContent.forEach(content => { content.classList.remove('active'); content.innerHTML = ''; });
         const targetBox = hierarchyDiagram.querySelector(`[data-target="${target}"]`);
-        const targetContent = document.getElementById(`content-${target}`);
+        const explanationContainer = document.querySelector("#resource-deep-dive .bg-white.p-8");
         if (targetBox) targetBox.classList.add('active');
-        if (targetContent) targetContent.classList.add('active');
+        if (explanationContainer && contentData[target]) {
+             explanationContainer.innerHTML = `<div class="tab-content active">${contentData[target]}</div>`;
+        }
     }
     hierarchyDiagram.addEventListener('click', (e) => {
         const targetBox = e.target.closest('.hierarchy-box');
         if (targetBox) setActive(targetBox.dataset.target);
     });
     
+    // --- MASTER NAVIGATION SCRIPT ---
+    function setupCollapsibleNav(headerId, linksId) { const header = document.getElementById(headerId); if (!header) return; const links = document.getElementById(linksId); if (!links) return; const arrow = header.querySelector('.arrow'); if (!arrow) return; header.addEventListener('click', (e) => { e.stopPropagation(); links.classList.toggle('hidden'); arrow.classList.toggle('rotate-180'); }); }
+    setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs'); setupCollapsibleNav('nav-resiliency-main', 'links-resiliency-main'); setupCollapsibleNav('nav-workload-resiliency', 'links-workload-resiliency'); setupCollapsibleNav('nav-core-resilience', 'links-core-resilience'); setupCollapsibleNav('nav-scaling', 'links-scaling'); setupCollapsibleNav('nav-traffic', 'links-traffic'); setupCollapsibleNav('nav-validation', 'links-validation'); setupCollapsibleNav('nav-labs', 'links-labs');
+    const activeLink = document.querySelector('.nav-link.active-page'); if (activeLink) { let current = activeLink; while (current && current.id !== 'main-nav') { if (current.id && current.id.startsWith('links-')) { current.classList.remove('hidden'); const header = current.previousElementSibling; if (header && header.classList.contains('nav-category-header')) { const arrow = header.querySelector('.arrow'); if (arrow) arrow.classList.add('rotate-180'); } } current = current.parentElement; } }
+
     // Initial UI state
     updateGameUI();
     setActive('cluster');
