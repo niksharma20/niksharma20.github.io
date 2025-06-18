@@ -184,7 +184,7 @@
                     <div id="hierarchy-diagram" class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-indigo-500 space-y-2">
                         <div data-target="cluster" class="hierarchy-box p-4 border-2 border-indigo-400 rounded-lg"><h3 class="font-bold text-indigo-700">Cluster Level</h3><p class="text-sm font-mono text-indigo-500">ClusterResourceQuota</p><div data-target="node" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-cyan-400 rounded-lg bg-cyan-50"><h4 class="font-bold text-cyan-700">Node Level</h4><p class="text-sm font-mono text-cyan-500">Capacity / Taints</p><div data-target="namespace" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-purple-400 rounded-lg bg-purple-50"><h5 class="font-bold text-purple-700">Namespace Level</h5><p class="text-sm font-mono text-purple-500">ResourceQuota</p><div data-target="limitrange" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-teal-400 rounded-lg bg-teal-50"><h6 class="font-bold text-teal-700">Pod & Container Level</h6><p class="text-sm font-mono text-teal-500">LimitRange</p><div data-target="requests" class="hierarchy-box mt-4 ml-4 p-4 border-2 border-orange-400 rounded-lg bg-orange-50"><h6 class="font-bold text-orange-700">Container Spec</h6><p class="text-sm font-mono text-orange-500">requests/limits</p><div class="flex gap-2 mt-2"><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div><div class="flex-1 text-center bg-white p-4 rounded shadow-inner"><p class="text-xs font-mono text-orange-600">cpu, memory, pv</p></div></div></div></div></div></div></div></div>
                     </div>
-                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <div id="hierarchy-explanation-content" class="bg-white p-8 rounded-lg shadow-lg">
                         <div id="content-cluster" class="tab-content"></div><div id="content-node" class="tab-content"></div><div id="content-namespace" class="tab-content"></div><div id="content-limitrange" class="tab-content"></div><div id="content-requests" class="tab-content"></div>
                     </div>
                 </div>
@@ -297,22 +297,29 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- HIERARCHY DIAGRAM LOGIC ---
     const hierarchyDiagram = document.getElementById('hierarchy-diagram');
     const allBoxes = hierarchyDiagram.querySelectorAll('.hierarchy-box');
-    const allContent = document.querySelectorAll('#resource-deep-dive .tab-content');
     const contentData = {
         cluster: `<h2 class="text-2xl font-bold text-indigo-800 mb-4">ClusterResourceQuota</h2><p class="text-stone-600 mb-4">This OpenShift-specific object manages resource usage across **multiple namespaces**. It sets an aggregate quota for a group of namespaces (e.g., a whole department), preventing one team from consuming an unfair share of cluster resources.</p>`,
         node: `<h2 class="text-2xl font-bold text-cyan-800 mb-4">Node Level Control</h2><p class="text-stone-600 mb-4">At this level, control is about the total capacity of the node itself and its \`allocatable\` resources. Administrators use **Taints and Tolerations** to dedicate nodes to specific workloads (e.g., GPU-enabled nodes), ensuring only matching pods can be scheduled there.</p>`,
         namespace: `<h2 class="text-2xl font-bold text-purple-800 mb-4">ResourceQuota</h2><p class="text-stone-600 mb-4">A standard Kubernetes object providing constraints on a **single namespace**. It limits the total amount of resources (CPU, memory) and number of objects (pods, services) that can exist within that namespace.</p>`,
         limitrange: `<h2 class="text-2xl font-bold text-teal-800 mb-4">LimitRange</h2><p class="text-stone-600 mb-4">This object operates within a namespace and defines constraints on **individual pods or containers**. It's used to set default request/limit values and enforce min/max resource values per container.</p>`,
-        requests: `<h2 class="text-2xl font-bold text-orange-800 mb-4">Container Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p>`
+        requests: `<h2 class="text-2xl font-bold text-orange-800 mb-4">Requests & Limits</h2><p class="text-stone-600 mb-4">The most fundamental level, defined directly in a pod spec. A **request** is guaranteed by Kubernetes for scheduling. A **limit** is the maximum a container can use. Exceeding a memory limit results in termination (OOMKilled).</p>`
     };
+    const explanationContainer = document.getElementById('hierarchy-explanation-content');
     function setActive(target) {
         allBoxes.forEach(box => box.classList.remove('active'));
-        allContent.forEach(content => { content.classList.remove('active'); content.innerHTML = ''; });
         const targetBox = hierarchyDiagram.querySelector(`[data-target="${target}"]`);
-        const explanationContainer = document.querySelector("#resource-deep-dive .bg-white.p-8");
         if (targetBox) targetBox.classList.add('active');
-        if (explanationContainer && contentData[target]) {
-             explanationContainer.innerHTML = `<div class="tab-content active">${contentData[target]}</div>`;
+
+        const contentDivs = explanationContainer.querySelectorAll('.tab-content');
+        contentDivs.forEach(div => {
+            div.classList.remove('active');
+            div.innerHTML = '';
+        });
+        
+        const targetContent = document.getElementById(`content-${target}`);
+        if(targetContent && contentData[target]) {
+            targetContent.innerHTML = contentData[target];
+            targetContent.classList.add('active');
         }
     }
     hierarchyDiagram.addEventListener('click', (e) => {
