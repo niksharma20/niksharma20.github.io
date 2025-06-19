@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workload Resiliency Overview | Nikhil Sharma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .nav-link.active-page, a.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .nav-category-header { cursor: pointer; }
+        .arrow.rotate-180 { transform: rotate(180deg); }
+        .chart-container { position: relative; width: 100%; max-width: 500px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+        .brand-blue { color: #35478C; }
+        .brand-orange { color: #F26522; }
+        .brand-yellow { color: #FCAF17; }
+        .brand-purple { color: #832A80; }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
+                <div>
+                    <h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2>
+                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">
+                        LinkedIn Profile
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    </a>
+                </div>
+            </div>
+            <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Hobbies</a>
+                <a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Travel Blog</a>
+                <div>
+                    <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100">
+                        <h3 class="font-semibold text-stone-700">Interactive technical blogs</h3>
+                        <span class="arrow transform transition-transform duration-200">▼</span>
+                    </div>
+                    <div id="links-tech-blogs" class="mt-1 ml-2 space-y-2 hidden">
+                        <div class="nav-subcategory">
+                            <div id="nav-workload-resiliency" class="nav-category-header flex justify-between items-center p-2 rounded-md">
+                                <a href="workload-resiliency.html" class="active-page font-semibold text-stone-600 text-sm hover:text-indigo-600 p-1 -ml-1 rounded">Workload Resiliency</a>
+                                <span class="arrow transform transition-transform duration-200">▼</span>
+                            </div>
+                            <div id="links-workload-resiliency" class="mt-1 ml-2 space-y-1 hidden">
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Core Resilience</h6>
+                                <a href="fault-tolerance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Tolerance</a>
+                                <a href="fault-isolation.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Isolation</a>
+                                <a href="app-health.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Application Health</a>
+                                <a href="auto-recovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Automated Recovery</a>
+                                <a href="qos.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Quality of Service</a>
+                                <a href="resource-management.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Management</a>
+                                
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Scaling & Availability</h6>
+                                <a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Single Cluster Scaling</a>
+                                <a href="conservative-maintenance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Conservative Maintenance</a>
+                                <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Best Practices & Pitfalls</a>
+                                <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Cross-Cluster Scaling</a>
+
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Traffic Deployment</h6>
+                                <a href="service-discovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Service Discovery</a>
+                                <a href="traffic-flow.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">N-S & E-W Traffic</a>
+                                <a href="deployment-strategy.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Deployment Strategies</a>
+                                <a href="rate-limiting.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Rate Limiting</a>
+
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Validation & Benchmarking</h6>
+                                <a href="workload-benchmarking.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Workload Benchmarking</a>
+                                <a href="chaos-engineering.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Chaos Engineering</a>
+                                
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Interactive Labs</h6>
+                                <a href="hpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">HPA Simulation</a>
+                                <a href="vpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">VPA Simulation</a>
+                                <a href="limits-quotas.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12 max-w-6xl mx-auto">
+            <header class="text-center mb-20">
+                <h1 class="text-4xl md:text-6xl font-extrabold brand-blue mb-4">Architecting Workload Resiliency</h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">A visual blueprint for building robust, self-healing applications in Kubernetes. Resilience isn't an accident—it's engineered.</p>
+            </header>
+
+            <div class="space-y-24">
+                <section id="foundation">
+                    <h2 class="text-3xl font-bold text-center mb-12"><span class="brand-orange">Layer 1:</span> The Core Foundation</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                            <h3 class="text-2xl font-bold brand-blue mb-4">Multi-Layered Defense</h3>
+                            <p class="text-gray-600 mb-6">Resilience starts with a defense-in-depth strategy. Each layer contains failures at a different level, from the network to the application logic.</p>
+                            <div class="space-y-4">
+                                <div class="border-l-4 border-orange-500 pl-4 py-2 bg-orange-50"><h4 class="font-bold">Network Policies</h4><p class="text-sm">The outer wall. Defines what can communicate, containing breaches at the network level.</p></div>
+                                <div class="flex justify-center text-gray-400">▼</div>
+                                <div class="border-l-4 border-yellow-500 pl-4 py-2 bg-yellow-50"><h4 class="font-bold">Bulkhead Pattern</h4><p class="text-sm">Internal compartments. Isolates resource pools to prevent performance overloads.</p></div>
+                                <div class="flex justify-center text-gray-400">▼</div>
+                                <div class="border-l-4 border-purple-500 pl-4 py-2 bg-purple-50"><h4 class="font-bold">Circuit Breaker</h4><p class="text-sm">The smart fuse. Dynamically stops calls to a failing dependency to prevent cascading failures.</p></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                            <h3 class="text-2xl font-bold brand-blue mb-4">The Probe Contract</h3>
+                            <p class="text-gray-600 mb-6">Health probes are a three-part contract with Kubernetes, defining how it should manage an application's lifecycle and recovery.</p>
+                            <div class="space-y-4">
+                                <div class="p-4 rounded-lg bg-blue-50 border border-blue-200"><h4 class="font-semibold"><span class="font-mono text-blue-600">startupProbe:</span> "Don't touch me yet."</h4><p class="text-sm text-gray-600 mt-1">Protects slow-starting apps from being killed prematurely.</p></div>
+                                <div class="p-4 rounded-lg bg-green-50 border border-green-200"><h4 class="font-semibold"><span class="font-mono text-green-600">readinessProbe:</span> "I'm ready for traffic."</h4><p class="text-sm text-gray-600 mt-1">Removes the pod from the load balancer if it fails.</p></div>
+                                <div class="p-4 rounded-lg bg-red-50 border border-red-200"><h4 class="font-semibold"><span class="font-mono text-red-600">livenessProbe:</span> "I'm stuck, restart me."</h4><p class="text-sm text-gray-600 mt-1">Detects deadlocks and tells Kubernetes to restart the container.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="scaling">
+                    <h2 class="text-3xl font-bold text-center mb-12"><span class="brand-yellow">Layer 2:</span> Elasticity & Availability</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                        <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                            <h3 class="text-2xl font-bold brand-blue mb-4">Horizontal Pod Autoscaler (HPA)</h3>
+                            <p class="text-gray-600 mb-6">The HPA automatically adjusts the number of pods based on observed metrics like CPU, ensuring consistent performance.</p>
+                            <div class="bg-gray-100 p-4 rounded-lg">
+                                <p class="font-mono text-lg text-gray-700">desiredReplicas =</p>
+                                <p class="font-mono text-2xl font-bold brand-blue">⌈ currentReplicas × ( <sup>currentMetric</sup> / <sub>desiredMetric</sub> ) ⌉</p>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-lg p-8 text-center">
+                            <h3 class="text-2xl font-bold brand-blue mb-4">QoS & Maintenance (PDB)</h3>
+                            <p class="text-gray-600 mb-6">Pod Disruption Budgets (PDBs) limit disruptions during maintenance, while QoS classes protect critical pods from eviction.</p>
+                            <div class="relative w-full h-40">
+                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-10 bg-red-400 rounded-t-lg flex items-center justify-center text-white font-bold text-sm">BestEffort (Evicted First)</div>
+                                <div class="absolute bottom-10 left-1/2 -translate-x-1/2 w-64 h-10 bg-yellow-400 rounded-t-lg flex items-center justify-center text-white font-bold text-sm">Burstable</div>
+                                <div class="absolute bottom-20 left-1/2 -translate-x-1/2 w-80 h-10 bg-green-500 rounded-t-lg flex items-center justify-center text-white font-bold text-sm">Guaranteed (Evicted Last)</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="traffic">
+                    <h2 class="text-3xl font-bold text-center mb-12"><span class="brand-purple">Layer 3:</span> Traffic Gates & Safe Deployments</h2>
+                    <div class="bg-white rounded-xl shadow-lg p-8">
+                         <h3 class="text-2xl font-bold brand-blue mb-4 text-center">Deployment Strategy Trade-offs</h3>
+                         <p class="text-gray-600 mb-8 text-center max-w-2xl mx-auto">Choosing how to deploy updates is a critical resiliency decision, balancing risk, cost, and speed. The radar chart below compares the three primary strategies.</p>
+                         <div class="chart-container">
+                             <canvas id="deploymentStrategyChart"></canvas>
+                         </div>
+                     </div>
+                </section>
+
+                <section id="validation">
+                    <h2 class="text-3xl font-bold text-center mb-12"><span class="text-teal-600">Layer 4:</span> The Watchtowers of Validation</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="bg-white rounded-xl shadow-lg p-8">
+                            <h3 class="text-2xl font-bold brand-blue mb-4">Workload Benchmarking</h3>
+                            <p class="text-gray-600 mb-6">You can't tune what you don't measure. Performance testing is crucial for gathering data to correctly configure resource requests and HPA policies.</p>
+                            <ul class="space-y-2">
+                               <li class="flex items-center gap-3"><span class="text-xl">💨</span> <strong>Smoke Testing:</strong> Verify basic functionality.</li>
+                               <li class="flex items-center gap-3"><span class="text-xl">📈</span> <strong>Load Testing:</strong> Establish a performance baseline.</li>
+                               <li class="flex items-center gap-3"><span class="text-xl">💥</span> <strong>Stress Testing:</strong> Find the system's breaking point.</li>
+                               <li class="flex items-center gap-3"><span class="text-xl">💧</span> <strong>Soak Testing:</strong> Uncover issues like memory leaks over time.</li>
+                            </ul>
+                        </div>
+                         <div class="bg-white rounded-xl shadow-lg p-8">
+                             <h3 class="text-2xl font-bold brand-blue mb-4">Chaos Engineering</h3>
+                             <p class="text-gray-600 mb-6">The scientific method for proving resilience. Intentionally inject controlled failures to build confidence that your system can withstand real-world turbulence.</p>
+                              <ol class="space-y-3 relative before:absolute before:left-2 before:top-2 before:h-full before:w-0.5 before:bg-gray-200">
+                                <li class="flex items-center gap-4 pl-8 relative"><span class="absolute left-0 top-1 w-5 h-5 bg-brand-orange text-white text-xs rounded-full flex items-center justify-center">1</span>Define a "Steady State".</li>
+                                <li class="flex items-center gap-4 pl-8 relative"><span class="absolute left-0 top-1 w-5 h-5 bg-brand-orange text-white text-xs rounded-full flex items-center justify-center">2</span>Formulate a Hypothesis.</li>
+                                <li class="flex items-center gap-4 pl-8 relative"><span class="absolute left-0 top-1 w-5 h-5 bg-brand-orange text-white text-xs rounded-full flex items-center justify-center">3</span>Inject Real-World Failures.</li>
+                                <li class="flex items-center gap-4 pl-8 relative"><span class="absolute left-0 top-1 w-5 h-5 bg-brand-orange text-white text-xs rounded-full flex items-center justify-center">4</span>Attempt to Disprove Hypothesis.</li>
+                             </ol>
+                         </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // --- Navigation Script ---
+    function setupCollapsibleNav(headerId, linksId) {
+        const header = document.getElementById(headerId);
+        if (!header) return;
+        const links = document.getElementById(linksId);
+        if (!links) return;
+        const arrow = header.querySelector('.arrow');
+        if (!arrow) return;
+        header.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'A') {
+                e.stopPropagation();
+                links.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            }
+        });
+    }
+    setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs');
+    setupCollapsibleNav('nav-workload-resiliency', 'links-workload-resiliency');
+    const activeLink = document.querySelector('.nav-link.active-page, a.active-page');
+    if (activeLink) {
+        // Handle the main link being active
+        if(activeLink.tagName === 'A' && !activeLink.classList.contains('nav-link')) {
+            let header = activeLink.closest('.nav-category-header');
+            if(header) {
+                let container = header.parentElement.closest('#links-tech-blogs, .nav-subcategory > div');
+                 while (container) {
+                    container.classList.remove('hidden');
+                    const parentHeader = container.previousElementSibling;
+                    if (parentHeader && parentHeader.classList.contains('nav-category-header')) {
+                        const arrow = parentHeader.querySelector('.arrow');
+                        if (arrow) arrow.classList.add('rotate-180');
+                    }
+                    container = container.parentElement.closest('#links-tech-blogs, .nav-subcategory > div');
+                }
+            }
+        } else { // Handle sub-links being active
+            let current = activeLink;
+            while (current && current.id !== 'main-nav') {
+                if (current.id && current.id.startsWith('links-')) {
+                    current.classList.remove('hidden');
+                    const header = current.previousElementSibling;
+                    if (header && header.classList.contains('nav-category-header')) {
+                        const arrow = header.querySelector('.arrow');
+                        if (arrow) arrow.classList.add('rotate-180');
+                    }
+                }
+                current = current.parentElement;
+            }
+        }
+    }
+    
+    // --- Deployment Strategy Chart Script ---
+    function wrapLabel(str) {
+        const words = str.split(' '); const lines = []; let currentLine = '';
+        for (const word of words) { if ((currentLine + word).length > 16) { lines.push(currentLine.trim()); currentLine = ''; } currentLine += word + ' '; }
+        lines.push(currentLine.trim()); return lines.filter(line => line.length > 0);
+    }
+    const deploymentStrategyData = {
+        labels: [ wrapLabel('Low Risk / Blast Radius'), wrapLabel('Low Resource Cost'), 'Deployment Speed', 'Rollback Mechanism', wrapLabel('Low Implementation Complexity') ],
+        datasets: [
+            { label: 'Rolling Update', data: [2.5, 4, 2, 2, 5], fill: true, backgroundColor: 'rgba(252, 175, 23, 0.2)', borderColor: '#FCAF17', pointBackgroundColor: '#FCAF17' }, 
+            { label: 'Blue/Green', data: [2, 1, 5, 5, 3], fill: true, backgroundColor: 'rgba(0, 161, 228, 0.2)', borderColor: '#00A1E4', pointBackgroundColor: '#00A1E4' }, 
+            { label: 'Canary', data: [5, 3, 1, 5, 1], fill: true, backgroundColor: 'rgba(53, 71, 140, 0.2)', borderColor: '#35478C', pointBackgroundColor: '#35478C' }
+        ]
+    };
+    const ctx = document.getElementById('deploymentStrategyChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'radar', data: deploymentStrategyData,
+        options: {
+            maintainAspectRatio: false,
+            elements: { line: { borderWidth: 3 } },
+            scales: { r: { angleLines: { color: 'rgba(0, 0, 0, 0.1)' }, grid: { color: 'rgba(0, 0, 0, 0.1)' }, pointLabels: { font: { size: 11 } }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1, backdropColor: 'transparent', font: { weight: 'bold' } } } },
+            plugins: {
+                legend: { position: 'top', labels: { font: { size: 14 } } },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) { return label.join(' '); } 
+                            else { return label; }
+                        }
+                    }
+                }
+            }
+        }
+    });
+});
+</script>
+</body>
+</html>
