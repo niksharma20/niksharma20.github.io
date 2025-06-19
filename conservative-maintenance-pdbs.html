@@ -40,8 +40,7 @@
                 <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
                 <div><h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2><a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">LinkedIn Profile<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a></div>
             </div>
-            <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
-                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+            <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto"><a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a><a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Hobbies</a><a href="#" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">Travel Blog</a>
                 <div>
                     <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100"><h3 class="font-semibold text-stone-700">Interactive technical blogs</h3><span class="arrow transform transition-transform duration-200">▼</span></div>
                     <div id="links-tech-blogs" class="mt-1 ml-2 space-y-2 hidden">
@@ -50,21 +49,26 @@
                                 <a href="workload-resiliency.html" class="font-semibold text-stone-600 text-sm hover:text-indigo-600">Workload Resiliency</a><span class="arrow transform transition-transform duration-200">▼</span>
                             </div>
                             <div id="links-workload-resiliency" class="mt-1 ml-2 space-y-1 hidden">
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Core Resilience</h6>
                                 <a href="fault-tolerance.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Tolerance</a>
                                 <a href="fault-isolation.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Fault Isolation</a>
                                 <a href="app-health.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Application Health</a>
                                 <a href="auto-recovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Automated Recovery</a>
                                 <a href="qos.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Quality of Service</a>
                                 <a href="resource-management.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Management</a>
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Scaling & Availability</h6>
                                 <a href="horizontal-scaling-single.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Single Cluster Scaling</a>
+                                <a href="conservative-maintenance-pdbs.html" class="nav-link active-page block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Conservative Maintenance</a>
                                 <a href="scaling-best-practices.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Best Practices & Pitfalls</a>
                                 <a href="horizontal-scaling-cross-cluster.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Cross-Cluster Scaling</a>
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Traffic Deployment</h6>
                                 <a href="service-discovery.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Service Discovery</a>
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Validation & Benchmarking</h6>
                                 <a href="workload-benchmarking.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Workload Benchmarking</a>
-                                <a href="limits-quotas.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
+                                <h6 class="font-bold text-stone-400 text-xs px-2 pt-2">Interactive Labs</h6>
                                 <a href="hpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">HPA Simulation</a>
                                 <a href="vpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">VPA Simulation</a>
-                                <a href="conservative-maintenance-pdbs.html" class="nav-link active-page block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Conservative Maintenance</a>
+                                <a href="limits-quotas.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
                             </div>
                         </div>
                     </div>
@@ -87,23 +91,31 @@
                         <div class="bg-white p-6 rounded-lg shadow-lg border-t-4 border-red-500"><h3 class="text-xl font-bold text-red-700 flex items-center gap-3"><span class="text-3xl">⚡</span>Involuntary Disruptions (Not Protected)</h3><p class="mt-2 text-stone-600">Unexpected failures where PDBs cannot help.</p><ul class="mt-4 space-y-2 list-disc list-inside text-sm"><li>Hardware failure.</li><li>Kernel panic on a node.</li><li>Cloud provider outage.</li></ul></div>
                     </div>
                 </section>
+                
                 <section>
                     <h2 class="text-3xl font-bold brand-orange mb-6 text-center">The Node Maintenance Game</h2>
                     <p class="text-center text-stone-600 mb-8">Try to drain `node-01` for maintenance. The drain will only succeed if all applications are protected by a valid Pod Disruption Budget.</p>
                     <div class="bg-white p-6 rounded-lg shadow-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-gray-100 p-4 rounded-lg border-2"><h3 class="font-bold text-center mb-4">Node: node-01</h3><div class="space-y-3"><div id="game1-app-a" class="flex items-center justify-between p-3 bg-white rounded shadow-sm"><span class="font-semibold">App A (3 Replicas)</span><span class="pdb-status flex items-center gap-1 text-xs font-bold text-green-600"><span class="w-5 h-5 flex items-center justify-center bg-green-200 rounded-full">🛡️</span> PDB OK</span></div><div id="game1-app-b" class="flex items-center justify-between p-3 bg-white rounded shadow-sm"><span class="font-semibold">App B (2 Replicas)</span><span class="pdb-status flex items-center gap-1 text-xs font-bold text-red-600"><span class="w-5 h-5 flex items-center justify-center bg-red-200 rounded-full">🛡️</span> NO PDB</span></div><div id="game1-app-c" class="flex items-center justify-between p-3 bg-white rounded shadow-sm"><span class="font-semibold">App C (1 Replica)</span><span class="pdb-status flex items-center gap-1 text-xs font-bold text-yellow-600"><span class="w-5 h-5 flex items-center justify-center bg-yellow-200 rounded-full">🛡️</span> PDB Risky</span></div></div></div><div><div class="flex gap-2 mb-4"><button id="apply-pdb-btn" class="w-full text-sm font-semibold bg-gray-200 text-gray-700 py-2 px-3 rounded-md hover:bg-gray-300">Apply PDB to App B</button><button id="drain-btn" class="w-full text-sm font-semibold bg-indigo-600 text-white py-2 px-3 rounded-md hover:bg-indigo-700">Drain Node</button></div><div id="game1-event-log" class="bg-gray-900 text-white font-mono text-xs rounded-lg p-4 h-40 overflow-y-auto"><p class="text-gray-400">Ready for maintenance drill...</p></div><button id="game1-reset-btn" class="mt-2 w-full text-sm text-gray-500 hover:text-black">Reset Game</button></div></div></div>
                 </section>
+
                 <section>
-                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">Anatomy of a PDB</h2><p class="text-center text-stone-600 mb-8">Hover over the keys in the YAML below for an explanation.</p>
+                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">Anatomy of a PDB</h2>
+                    <p class="text-center text-stone-600 mb-8">Hover over the keys in the YAML below for an explanation.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start"><div class="bg-gray-900 text-white font-mono p-6 rounded-lg shadow-lg text-sm"><span class="text-gray-400">apiVersion: policy/v1</span><br><span class="text-gray-400">kind: PodDisruptionBudget</span><br><span class="text-gray-400">metadata:</span><br><span class="text-gray-400">&nbsp;&nbsp;name: my-app-pdb</span><br><span class="text-gray-400">spec:</span><br>&nbsp;&nbsp;<span data-key="selector" class="yaml-key">selector:</span><br><span class="text-gray-400">&nbsp;&nbsp;&nbsp;&nbsp;matchLabels:</span><br><span class="text-gray-400">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: my-app</span><br>&nbsp;&nbsp;<span data-key="minAvailable" class="yaml-key">minAvailable: 2</span></div><div id="pdb-explanation-box" class="bg-white p-6 rounded-lg shadow-lg min-h-[200px] flex items-center justify-center"><p id="pdb-explanation-text" class="text-stone-500 text-center">Hover over a highlighted key on the left.</p></div></div>
                 </section>
+                
                 <section>
-                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">Real-World Use Cases & Impact</h2><p class="text-center text-stone-600 mb-8">PDBs are essential for maintaining availability in many common operational scenarios.</p>
+                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">Real-World Use Cases & Impact</h2>
+                    <p class="text-center text-stone-600 mb-8">PDBs are essential for maintaining availability in many common operational scenarios.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="font-bold text-lg">Rolling Cluster Upgrades</h3><p class="mt-2 text-sm text-stone-600">PDBs ensure that as each node is drained for an upgrade, your applications migrate gracefully without dipping below their minimum availability threshold.</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="font-bold text-lg">Avoiding Downtime During Auto-Scaling</h3><p class="mt-2 text-sm text-stone-600">When a cluster autoscaler removes an underutilized node, it respects PDBs, preventing the termination of pods that would reduce an application's availability.</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="font-bold text-lg">Database Pod Protection</h3><p class="mt-2 text-sm text-stone-600">For a stateful database cluster, a PDB with `minAvailable: 2` is critical to prevent the loss of quorum during maintenance.</p></div><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="font-bold text-lg">Compliance: Controlled Maintenance</h3><p class="mt-2 text-sm text-stone-600">PDBs provide a programmatic way to enforce availability SLAs. They can block automated maintenance if conditions are not safe, ensuring compliance.</p></div></div>
                 </section>
+
                 <section>
-                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">“Zero Downtime is a Policy”: PDB Game</h2><p class="text-center text-stone-600 mb-8">You need to perform maintenance on `node-01`. Follow the steps to safely drain the node without violating the application's availability policy.</p>
+                    <h2 class="text-3xl font-bold brand-orange mb-6 text-center">“Zero Downtime is a Policy”: PDB Game</h2>
+                    <p class="text-center text-stone-600 mb-8">You need to perform maintenance on `node-01`. Follow the steps to safely drain the node without violating the application's availability policy.</p>
                     <div class="bg-white p-6 rounded-lg shadow-lg"><div class="grid grid-cols-1 md:grid-cols-5 gap-4"><div class="md:col-span-2 space-y-4"><div class="bg-gray-100 p-3 rounded-lg border-2"><h4 class="font-bold text-center text-sm mb-2">node-01</h4><div id="game2-node-1" class="flex flex-wrap gap-2 min-h-[5rem]"></div></div><div class="bg-gray-100 p-3 rounded-lg border-2"><h4 class="font-bold text-center text-sm mb-2">node-02</h4><div id="game2-node-2" class="flex flex-wrap gap-2 min-h-[5rem]"></div></div></div><div class="md:col-span-3"><div class="flex flex-col space-y-2 mb-4"><button id="game2-step-1" class="w-full text-sm font-semibold bg-indigo-600 text-white py-2 px-3 rounded-md hover:bg-indigo-700">1. Deploy App (3 Replicas)</button><button id="game2-step-2" class="w-full text-sm font-semibold bg-gray-200 text-gray-700 py-2 px-3 rounded-md" disabled>2. Apply PDB (minAvailable: 2)</button><button id="game2-step-3" class="w-full text-sm font-semibold bg-gray-200 text-gray-700 py-2 px-3 rounded-md" disabled>3. Drain Node (Attempt 1)</button><button id="game2-step-4" class="w-full text-sm font-semibold bg-gray-200 text-gray-700 py-2 px-3 rounded-md" disabled>4. Scale App to 4 Replicas</button><button id="game2-step-5" class="w-full text-sm font-semibold bg-gray-200 text-gray-700 py-2 px-3 rounded-md" disabled>5. Drain Node (Attempt 2)</button></div><div id="game2-event-log" class="bg-gray-900 text-white font-mono text-xs rounded-lg p-4 h-48 overflow-y-auto"><p class="text-gray-400">Click Step 1 to begin...</p></div><button id="game2-reset-btn" class="mt-2 w-full text-sm text-gray-500 hover:text-black">Reset Game</button></div></div></div>
                 </section>
+                
                 <section>
                      <h2 class="text-3xl font-bold brand-orange mb-6 text-center">Advanced Policy & CLI Reference</h2>
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-8"><div class="bg-white p-6 rounded-lg shadow-md"><h3 class="font-bold text-lg mb-2">Unhealthy Pod Eviction Policy</h3><p class="text-sm text-stone-600 mb-2"><strong>IfHealthyBudget (Default):</strong> Unhealthy pods can only be evicted if their application is not already disrupted.</p><p class="text-sm text-stone-600"><strong>AlwaysAllow:</strong> Unhealthy pods can always be evicted, even if it violates the PDB. Useful for clearing stuck applications.</p></div><div class="bg-gray-900 text-white p-6 rounded-lg shadow-lg font-mono text-sm"><p class="mb-2"><span class="text-green-400"># Create a PDB</span><br>$ oc create poddisruptionbudget my-pdb --selector=app=rails --min-available=1</p><p><span class="text-green-400"># List all PDBs</span><br>$ oc get pdb -A</p></div></div>
@@ -114,35 +126,62 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Defensively find elements and attach listeners
+    function safeAddListener(selector, event, handler) {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.addEventListener(event, handler);
+        }
+    }
+
     // --- GAME 1 LOGIC ---
     const game1 = { appB_hasPDB: false };
-    const drainBtn = document.getElementById('drain-btn');
-    const applyPdbBtn = document.getElementById('apply-pdb-btn');
     const game1LogEl = document.getElementById('game1-event-log');
-    const game1ResetBtn = document.getElementById('game1-reset-btn');
+    
     function game1Log(message, success = null) {
-        const p = document.createElement('p'); let colorClass = 'text-gray-300'; let prefix = 'INFO:';
-        if (success === true) { colorClass = 'text-green-400'; prefix = 'PASS:'; } else if (success === false) { colorClass = 'text-red-400'; prefix = 'FAIL:'; }
-        p.className = `py-1 ${colorClass}`; p.innerHTML = `<span class="font-bold mr-1">${prefix}</span> ${message}`;
-        game1LogEl.appendChild(p); game1LogEl.scrollTop = game1LogEl.scrollHeight;
+        if (!game1LogEl) return;
+        const p = document.createElement('p');
+        let colorClass = 'text-gray-300'; let prefix = 'INFO:';
+        if (success === true) { colorClass = 'text-green-400'; prefix = 'PASS:'; } 
+        else if (success === false) { colorClass = 'text-red-400'; prefix = 'FAIL:'; }
+        p.className = `py-1 ${colorClass}`;
+        p.innerHTML = `<span class="font-bold mr-1">${prefix}</span> ${message}`;
+        game1LogEl.appendChild(p);
+        game1LogEl.scrollTop = game1LogEl.scrollHeight;
     }
+
     function resetGame1() {
         game1.appB_hasPDB = false;
         const appB_status = document.querySelector('#game1-app-b .pdb-status');
-        appB_status.innerHTML = `<span class="w-5 h-5 flex items-center justify-center bg-red-200 rounded-full">🛡️</span> NO PDB`;
-        appB_status.className = 'pdb-status flex items-center gap-1 text-xs font-bold text-red-600';
-        applyPdbBtn.disabled = false; applyPdbBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        game1LogEl.innerHTML = '<p class="text-gray-400">Ready for maintenance drill...</p>';
+        if (appB_status) {
+            appB_status.innerHTML = `<span class="w-5 h-5 flex items-center justify-center bg-red-200 rounded-full">🛡️</span> NO PDB`;
+            appB_status.className = 'pdb-status flex items-center gap-1 text-xs font-bold text-red-600';
+        }
+        const applyPdbBtn = document.getElementById('apply-pdb-btn');
+        if (applyPdbBtn) {
+            applyPdbBtn.disabled = false;
+            applyPdbBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+        if (game1LogEl) game1LogEl.innerHTML = '<p class="text-gray-400">Ready for maintenance drill...</p>';
     }
-    if (applyPdbBtn) applyPdbBtn.addEventListener('click', () => {
+
+    safeAddListener('#apply-pdb-btn', 'click', () => {
+        const applyPdbBtn = document.getElementById('apply-pdb-btn');
         game1.appB_hasPDB = true;
         const appB_status = document.querySelector('#game1-app-b .pdb-status');
-        appB_status.innerHTML = `<span class="w-5 h-5 flex items-center justify-center bg-green-200 rounded-full">🛡️</span> PDB OK`;
-        appB_status.className = 'pdb-status flex items-center gap-1 text-xs font-bold text-green-600';
+        if (appB_status) {
+            appB_status.innerHTML = `<span class="w-5 h-5 flex items-center justify-center bg-green-200 rounded-full">🛡️</span> PDB OK`;
+            appB_status.className = 'pdb-status flex items-center gap-1 text-xs font-bold text-green-600';
+        }
         game1Log('PDB applied to App B.', true);
-        applyPdbBtn.disabled = true; applyPdbBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        if(applyPdbBtn) {
+            applyPdbBtn.disabled = true;
+            applyPdbBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
     });
-    if (drainBtn) drainBtn.addEventListener('click', () => {
+
+    safeAddListener('#drain-btn', 'click', () => {
+        if (!game1LogEl) return;
         game1LogEl.innerHTML = ''; game1Log('Initiating drain on node-01...');
         game1Log('Checking App A...'); game1Log('PDB found. Eviction allowed.', true);
         game1Log('Checking App B...');
@@ -152,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         game1Log('PDB found, but app has only 1 replica. Eviction would violate budget.', false);
         game1Log('This common misconfiguration can block cluster maintenance.', false);
     });
-    if (game1ResetBtn) game1ResetBtn.addEventListener('click', resetGame1);
+    safeAddListener('#game1-reset-btn', 'click', resetGame1);
 
     // --- GAME 2 LOGIC ---
     const game2 = { state: -1, app: { hasPDB: false, replicas: 0 } };
@@ -160,14 +199,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const game2Node2El = document.getElementById('game2-node-2');
     const game2LogEl = document.getElementById('game2-event-log');
     const game2Buttons = Array.from({length: 5}, (_, i) => document.getElementById(`game2-step-${i+1}`));
-    const game2ResetBtn = document.getElementById('game2-reset-btn');
+    
     function game2Log(message, success = null) {
+        if (!game2LogEl) return;
         const p = document.createElement('p'); let colorClass = 'text-gray-300'; let prefix = 'INFO:';
         if (success === true) { colorClass = 'text-green-400'; prefix = 'PASS:'; } else if (success === false) { colorClass = 'text-red-400'; prefix = 'FAIL:'; }
         p.className = `py-1 ${colorClass}`; p.innerHTML = `<span class="font-bold mr-1">${prefix}</span> ${message}`;
         game2LogEl.appendChild(p); game2LogEl.scrollTop = game2LogEl.scrollHeight;
     }
+    
     function renderGame2Pods() {
+        if (!game2Node1El || !game2Node2El) return;
         game2Node1El.innerHTML = ''; game2Node2El.innerHTML = '';
         for(let i = 0; i < game2.app.replicas; i++) {
             const podEl = document.createElement('div'); podEl.id = `game2-pod-${i+1}`;
@@ -177,6 +219,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (i < 2) { game2Node1El.appendChild(podEl); } else { game2Node2El.appendChild(podEl); }
         }
     }
+
     function setGame2ButtonState(step) {
         game2Buttons.forEach((btn, index) => {
             if(btn) {
@@ -185,58 +228,60 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
     function resetGame2() {
         game2.state = -1; game2.app = { hasPDB: false, replicas: 0 };
         renderGame2Pods(); setGame2ButtonState(0);
-        game2LogEl.innerHTML = '<p class="text-gray-400">Click Step 1 to begin...</p>';
+        if (game2LogEl) game2LogEl.innerHTML = '<p class="text-gray-400">Click Step 1 to begin...</p>';
     }
+
     game2Buttons.forEach((button, index) => {
-        if(button) button.addEventListener('click', () => { game2.state = index; game2LogEl.innerHTML = ''; runGame2Step(); });
+        if(button) button.addEventListener('click', () => { game2.state = index; if(game2LogEl) game2LogEl.innerHTML = ''; runGame2Step(); });
     });
-    if(game2ResetBtn) game2ResetBtn.addEventListener('click', resetGame2);
+    safeAddListener('#game2-reset-btn', 'click', resetGame2);
+
     function runGame2Step() {
         switch(game2.state) {
             case 0: game2Log('Deploying my-app with 3 replicas...'); game2.app.replicas = 3; renderGame2Pods(); game2Log('Deployment complete. Application is not protected.', false); setGame2ButtonState(1); break;
             case 1: game2Log('Applying PDB (minAvailable: 2) to my-app...'); game2.app.hasPDB = true; renderGame2Pods(); game2Log('PDB applied successfully.', true); setGame2ButtonState(2); break;
-            case 2: game2Log('Attempting to drain node-01...'); game2Log('Checking PDB for my-app...'); document.getElementById('game2-pod-1').classList.add('evicting'); game2Log('Evicting pod-1... OK. (2 available >= minAvailable 2)'); document.getElementById('game2-pod-2').classList.add('evicting'); game2Log('Checking pod-2... Eviction would leave 1 pod. Violates PDB!', false); game2Log('DRAIN FAILED. Maintenance blocked.', false); setTimeout(() => { document.getElementById('game2-pod-1').classList.remove('evicting'); document.getElementById('game2-pod-2').classList.remove('evicting'); }, 1000); setGame2ButtonState(3); break;
+            case 2: game2Log('Attempting to drain node-01...'); game2Log('Checking PDB for my-app...'); document.getElementById('game2-pod-1')?.classList.add('evicting'); game2Log('Evicting pod-1... OK. (2 available >= minAvailable 2)'); document.getElementById('game2-pod-2')?.classList.add('evicting'); game2Log('Checking pod-2... Eviction would leave 1 pod. Violates PDB!', false); game2Log('DRAIN FAILED. Maintenance blocked.', false); setTimeout(() => { document.getElementById('game2-pod-1')?.classList.remove('evicting'); document.getElementById('game2-pod-2')?.classList.remove('evicting'); }, 1000); setGame2ButtonState(3); break;
             case 3: game2Log('Scaling app to 4 replicas to increase budget...'); game2.app.replicas = 4; renderGame2Pods(); game2Log('Application scaled successfully.', true); setGame2ButtonState(4); break;
-            case 4: game2Log('Re-attempting to drain node-01...'); game2Log('Checking PDB for my-app...'); const pod1 = document.getElementById('game2-pod-1'); const pod2 = document.getElementById('game2-pod-2'); pod1.classList.add('evicting'); game2Log('Evicting pod-1... OK. (3 available >= minAvailable 2)'); setTimeout(() => { pod1.classList.add('evicted'); pod2.classList.add('evicting'); game2Log('Evicting pod-2... OK. (2 available >= minAvailable 2)'); setTimeout(() => { pod2.classList.add('evicted'); game2Log('DRAIN SUCCESSFUL.', true); setGame2ButtonState(null); }, 1000); }, 1000); break;
+            case 4: game2Log('Re-attempting to drain node-01...'); game2Log('Checking PDB for my-app...'); const pod1 = document.getElementById('game2-pod-1'); const pod2 = document.getElementById('game2-pod-2'); if(pod1) pod1.classList.add('evicting'); game2Log('Evicting pod-1... OK. (3 available >= minAvailable 2)'); setTimeout(() => { if(pod1) pod1.classList.add('evicted'); if(pod2) pod2.classList.add('evicting'); game2Log('Evicting pod-2... OK. (2 available >= minAvailable 2)'); setTimeout(() => { if(pod2) pod2.classList.add('evicted'); game2Log('DRAIN SUCCESSFUL.', true); setGame2ButtonState(null); }, 1000); }, 1000); break;
         }
     }
     setGame2ButtonState(0);
 
     // --- Interactive PDB Anatomy ---
     const pdbKeys = document.querySelectorAll('.yaml-key');
-    const explanationBox = document.getElementById('pdb-explanation-box');
-    const explanationText = document.getElementById('pdb-explanation-text');
-    const explanations = {
-        selector: 'Identifies the specific set of pods to which the PDB applies.',
-        minAvailable: 'The minimum number of pods that must remain available during a disruption.'
-    };
-    pdbKeys.forEach(key => {
-        key.addEventListener('mouseover', () => { explanationText.textContent = explanations[key.dataset.key] || 'Hover over a key.'; explanationBox.classList.add('bg-yellow-50'); });
-        key.addEventListener('mouseout', () => { explanationText.textContent = 'Hover over a highlighted key on the left.'; explanationBox.classList.remove('bg-yellow-50'); });
-    });
+    if (pdbKeys) {
+        const explanationBox = document.getElementById('pdb-explanation-box');
+        const explanationText = document.getElementById('pdb-explanation-text');
+        const explanations = { selector: 'Identifies the specific set of pods to which the PDB applies.', minAvailable: 'The minimum number of pods that must remain available during a disruption.'};
+        pdbKeys.forEach(key => {
+            key.addEventListener('mouseover', () => { if(explanationText && explanationBox) { explanationText.textContent = explanations[key.dataset.key] || 'Hover over a key.'; explanationBox.classList.add('bg-yellow-50'); }});
+            key.addEventListener('mouseout', () => { if(explanationText && explanationBox) { explanationText.textContent = 'Hover over a highlighted key on the left.'; explanationBox.classList.remove('bg-yellow-50'); }});
+        });
+    }
 
     // --- Interactive Scenarios ---
     const scenarioControls = document.getElementById('scenario-controls');
     const scenarioContentBox = document.getElementById('scenario-content-box');
-    const scenarios = {
-        drain: { title: 'Impact on Node Draining', text: 'PDBs are strictly enforced during a `oc adm drain` command. If draining a node would violate a PDB, the drain operation will be blocked.'},
-        autoscaler: { title: 'Impact on Cluster Autoscaler', text: 'The cluster autoscaler is PDB-aware. It will refuse to scale down a node if doing so would violate a pod\'s disruption budget.'},
-        descheduler: { title: 'Impact on Descheduler', text: 'The descheduler also respects PDBs and will not evict a pod for rebalancing if that eviction would violate the pod\'s budget.'},
-        misconfig: { title: 'Risk of Misconfiguration', text: 'An overly restrictive PDB is a critical error. Setting `minAvailable: 100%` or `maxUnavailable: 0` for a multi-replica application can block all voluntary evictions and halt cluster upgrades.'}
-    };
-    function updateScenario(scenarioName) {
-        if (!scenarios[scenarioName]) return;
-        const scenario = scenarios[scenarioName];
-        scenarioContentBox.innerHTML = `<h4 class="font-bold text-lg text-indigo-800 mb-2">${scenario.title}</h4><p class="text-sm text-stone-700">${scenario.text}</p>`;
-        scenarioControls.querySelectorAll('.scenario-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.scenario === scenarioName) btn.classList.add('active');
-        });
-    }
     if (scenarioControls) {
+        const scenarios = {
+            drain: { title: 'Impact on Node Draining', text: 'PDBs are strictly enforced during a `oc adm drain` command. If draining a node would violate a PDB, the drain operation will be blocked.'},
+            autoscaler: { title: 'Impact on Cluster Autoscaler', text: 'The cluster autoscaler is PDB-aware. It will refuse to scale down a node if doing so would violate a pod\'s disruption budget.'},
+            descheduler: { title: 'Impact on Descheduler', text: 'The descheduler also respects PDBs and will not evict a pod for rebalancing if that eviction would violate the pod\'s budget.'},
+            misconfig: { title: 'Risk of Misconfiguration', text: 'An overly restrictive PDB is a critical error. Setting `minAvailable: 100%` or `maxUnavailable: 0` for a multi-replica application can block all voluntary evictions and halt cluster upgrades.'}
+        };
+        function updateScenario(scenarioName) {
+            if (!scenarios[scenarioName] || !scenarioContentBox) return;
+            const scenario = scenarios[scenarioName];
+            scenarioContentBox.innerHTML = `<h4 class="font-bold text-lg text-indigo-800 mb-2">${scenario.title}</h4><p class="text-sm text-stone-700">${scenario.text}</p>`;
+            scenarioControls.querySelectorAll('.scenario-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.scenario === scenarioName) btn.classList.add('active');
+            });
+        }
         scenarioControls.addEventListener('click', (e) => { if (e.target.tagName === 'BUTTON') updateScenario(e.target.dataset.scenario); });
         updateScenario('drain');
     }
@@ -245,21 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function setupCollapsibleNav(headerId, linksId) { const header = document.getElementById(headerId); if (!header) return; const links = document.getElementById(linksId); if (!links) return; const arrow = header.querySelector('.arrow'); if (!arrow) return; header.addEventListener('click', (e) => { if (e.target.tagName !== 'A') { e.stopPropagation(); links.classList.toggle('hidden'); arrow.classList.toggle('rotate-180'); } }); }
     setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs');
     setupCollapsibleNav('nav-workload-resiliency', 'links-workload-resiliency');
-    const activeLink = document.querySelector('.nav-link.active-page');
-    if (activeLink) {
-        let current = activeLink;
-        while (current && current.id !== 'main-nav') {
-            if (current.id && current.id.startsWith('links-')) {
-                current.classList.remove('hidden');
-                const header = current.previousElementSibling;
-                if (header && header.classList.contains('nav-category-header')) {
-                    const arrow = header.querySelector('.arrow');
-                    if (arrow) arrow.classList.add('rotate-180');
-                }
-            }
-            current = current.parentElement;
-        }
-    }
+    const activeLink = document.querySelector('.nav-link.active-page'); if (activeLink) { let current = activeLink; while (current && current.id !== 'main-nav') { if (current.id && current.id.startsWith('links-')) { current.classList.remove('hidden'); const header = current.previousElementSibling; if (header && header.classList.contains('nav-category-header')) { const arrow = header.querySelector('.arrow'); if (arrow) arrow.classList.add('rotate-180'); } } current = current.parentElement; } }
 });
 </script>
 </body>
