@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Infographics | Nikhil Sharma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; }
+        .nav-link.active-page, .nav-category-header.active-page { background-color: #E0E7FF; color: #3730A3; font-weight: 600; }
+        .nav-category-header { cursor: pointer; }
+        .arrow.rotate-180 { transform: rotate(180deg); }
+        .brand-blue { color: #35478C; }
+    </style>
+</head>
+<body class="text-stone-800">
+    <div class="flex">
+        <aside class="sticky top-0 h-screen w-72 bg-white shadow-md p-5 hidden lg:flex flex-col">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl font-bold">NS</div>
+                <div>
+                    <h2 class="text-lg font-bold text-indigo-900">Nikhil Sharma</h2>
+                    <a href="https://www.linkedin.com/in/nikhilsharmait/" target="_blank" rel="noopener noreferrer" class="text-sm text-indigo-500 hover:underline flex items-center gap-1">LinkedIn Profile<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg></a>
+                </div>
+            </div>
+            <nav id="main-nav" class="flex-grow space-y-2 overflow-y-auto">
+                <a href="index.html" class="nav-link block w-full text-left p-2 rounded-md text-stone-700 font-semibold hover:bg-stone-100 transition-colors">About Me</a>
+                <div>
+                    <div id="nav-tech-blogs" class="nav-category-header flex justify-between items-center p-2 rounded-md hover:bg-stone-100 active-page">
+                        <a href="interactive-infographics.html" class="font-semibold text-stone-700">Interactive Infographics</a>
+                        <span class="arrow transform transition-transform duration-200">▼</span>
+                    </div>
+                    <div id="links-tech-blogs" class="mt-1 ml-2 space-y-1 hidden">
+                        <a href="workload-resiliency.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-sm">Workload Resiliency</a>
+                        <a href="hpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">HPA Simulation</a>
+                        <a href="vpa.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">VPA Simulation</a>
+                        <a href="limits-quotas.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Resource Quota Game</a>
+                        <a href="conservative-maintenance-pdbs.html" class="nav-link block w-full text-left p-1.5 rounded-md text-stone-600 hover:bg-stone-100 text-xs">Conservative Maintenance (PDBs)</a>
+                    </div>
+                </div>
+            </nav>
+            </aside>
+
+        <main class="w-full p-4 md:p-8 lg:p-12">
+            <header class="mb-12 max-w-4xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-extrabold brand-blue text-center">Interactive Infographics</h1>
+                <p class="mt-4 text-lg text-stone-600 text-center">A collection of hands-on simulations and visual guides designed to make complex concepts tangible and easier to understand.</p>
+            </header>
+
+            </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    function setupCollapsibleNav(headerId, linksId) {
+        const header = document.getElementById(headerId);
+        if (!header) return;
+        const links = document.getElementById(linksId);
+        if (!links) return;
+        const arrow = header.querySelector('.arrow');
+        if (!arrow) return;
+
+        header.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'A') {
+                e.stopPropagation();
+                links.classList.toggle('hidden');
+                arrow.classList.toggle('rotate-180');
+            }
+        });
+    }
+
+    // Setup navigation
+    setupCollapsibleNav('nav-tech-blogs', 'links-tech-blogs');
+
+    // Automatically open the path to the active page
+    const activeLink = document.querySelector('.nav-link.active-page, .nav-category-header.active-page');
+    if (activeLink) {
+        let current = activeLink;
+        
+        // If the active item is the header itself, open its links
+        if (current.id.startsWith('nav-')) {
+            const linksContainer = current.nextElementSibling;
+            if(linksContainer && linksContainer.id.startsWith('links-')) {
+                linksContainer.classList.remove('hidden');
+                const arrow = current.querySelector('.arrow');
+                if (arrow) arrow.classList.add('rotate-180');
+            }
+        } else { // If a sub-link is active, open its parents
+            while (current && current.id !== 'main-nav') {
+                const parentLinks = current.closest('div[id^="links-"]');
+                if (parentLinks && parentLinks.classList.contains('hidden')) {
+                    parentLinks.classList.remove('hidden');
+                    const header = parentLinks.previousElementSibling;
+                    if (header && header.classList.contains('nav-category-header')) {
+                        const arrow = header.querySelector('.arrow');
+                        if (arrow) arrow.classList.add('rotate-180');
+                    }
+                }
+                current = current.parentElement;
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>
